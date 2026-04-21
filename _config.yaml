@@ -1,0 +1,25 @@
+title: Nicolas Karasiak
+description: Staff Data Engineer — Geospatial & ML Platforms
+
+# Keep rendering identical to GitHub
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# No theme → preserve terminal aesthetic
+theme: null
+
+# Ensure assets (like CSS) are included
+include:
+  - assets
+
+# Clean URLs (no .html)
+permalink: pretty
+
+# Avoid unnecessary processing
+exclude:
+  - README.md
+  - LICENSE
+  - .gitignore
+  - node_modules
+  - vendor
