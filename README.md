@@ -1,4 +1,4 @@
-```   
+```
 ███  ██ ██ ▄█████ ▄████▄ ██     ▄████▄ ▄█████        
 ██ ▀▄██ ██ ██     ██  ██ ██     ██▄▄██ ▀▀▀▄▄▄        
 ██   ██ ██ ▀█████ ▀████▀ ██████ ██  ██ █████▀                                                       
@@ -6,8 +6,6 @@
 ████   ██▄▄██ ██▄▄██▄ ██▄▄██ ▀▀▀▄▄▄ ██ ██▄▄██ ████   
 ██ ▀█▄ ██  ██ ██   ██ ██  ██ █████▀ ██ ██  ██ ██ ▀█▄ 
 ```
-
-# NICOLAS KARASIAK
 
 **Staff Data & ML Engineer · Geospatial Platforms**
 
@@ -65,17 +63,27 @@ Open-source author, 600+ citations on OOS, and 300+ for papers.
 ## SKILLS
 
 **Languages** → Python, Rust
+
 **Distributed** → Dask, large-scale data pipelines
+
 **Geospatial** → STAC, GeoParquet, GDAL
+
 **ML** → scikit-learn, PyTorch, Lightning, time-series, geospatial ML
+
 **Platform / API** → Data platform & API/SDK design
+
 **Performance** → ARM64, profiling, cost optimization
+
 **Infra** → AWS (EC2, EKS, S3), Docker, Argo
+
 **Other** → System design, technical lead
 
 ## CONTACT
 
 <karasiak.nicolas@gmail.com>
+
 [+33 6 01 76 77 08](tel:+33601767708)
+
 [github.com/nkarasiak](https://github.com/nkarasiak)
+
 [Google Scholar](https://scholar.google.com/citations?user=71cgDAoAAAAJ)

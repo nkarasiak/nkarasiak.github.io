@@ -6,23 +6,11 @@
 <title>{{ site.title }}</title>
 <style>
 :root {
-  --bg: #0d1117;
-  --fg: #c9d1d9;
-  --dim: #6e7681;
-
-  --c-h1: #e6edf3;
-  --c-h2: #bdc4cc;
-  --c-h3: #9ca3af;
-  --c-bold: #ffffff;
-  --c-italic: #8b949e;
-  --c-code: #b0b8c0;
-  --c-link: #a0a8b0;
-  --c-tag: #6e7681;
-  --c-bullet: #9096a0;
-  --c-quote: #9ca3af;
-  --c-banner: #c0c6ce;
-  --c-prompt: #d0d7de;
-  --c-rule: #30363d;
+  --bg: #0c0c0c;
+  --fg: #888888;
+  --fg-bright: #d0d0d0;
+  --fg-dim: #555555;
+  --accent: #ffffff;
 }
 
 * { box-sizing: border-box; }
@@ -32,442 +20,143 @@ html, body {
   padding: 0;
   background: var(--bg);
   color: var(--fg);
-  height: 100vh;
-  overflow: hidden;
 }
 
 body {
   font-family: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Terminal container - full height with prompt at bottom */
-.terminal {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
 }
 
-.terminal-scroll {
-  flex: 1;
-  overflow-y: auto;
-  padding: 2rem max(1.25rem, calc(50% - 460px)) 1rem;
-}
-
-pre.raw-md {
-  margin: 0;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  tab-size: 2;
-  font: inherit;
-  color: inherit;
+pre {
   background: transparent;
-  opacity: 0;
+  color: #707070;
+  font-family: inherit;
+  font-size: 0.6rem;
+  line-height: 1.35;
+  overflow-x: hidden;
+  margin: 0 0 1.5rem;
 }
 
-pre.raw-md.loaded {
-  opacity: 1;
-  transition: opacity 0.3s ease;
+code {
+  font-family: inherit;
+  color: var(--fg-bright);
 }
 
-pre.raw-md .h1     { color: var(--c-h1); font-weight: bold; }
-pre.raw-md .h2     { color: var(--c-h2); font-weight: bold; }
-pre.raw-md .h3     { color: var(--c-h3); font-weight: bold; }
-pre.raw-md .b      { color: var(--c-bold); font-weight: bold; }
-pre.raw-md .i      { color: var(--c-italic); font-style: italic; }
-pre.raw-md .code   { color: var(--c-code); }
-pre.raw-md .link   { color: var(--c-link); }
-pre.raw-md .tag    { color: var(--c-tag); }
-pre.raw-md .bullet { color: var(--c-bullet); font-weight: bold; }
-pre.raw-md .quote  { color: var(--c-quote); font-style: italic; }
-pre.raw-md .banner { color: var(--c-banner); }
-pre.raw-md .prompt { color: var(--c-prompt); font-weight: bold; }
-pre.raw-md .rule   { color: var(--c-rule); }
-
-/* Command output area */
-.cmd-output {
-  margin: 1rem 0;
-  padding: 0;
+pre code {
+  color: #707070;
 }
 
-.cmd-entry {
-  margin: 0.5rem 0;
+h1 {
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.6rem;
 }
 
-.cmd-line {
-  color: var(--c-italic);
-}
-
-.cmd-line .cmd-prompt-user { color: var(--c-h1); }
-.cmd-line .cmd-prompt-host { color: var(--c-bold); }
-.cmd-line .cmd-prompt-path { color: var(--c-code); }
-
-.cmd-response {
-  color: var(--c-fg);
-  margin: 0.25rem 0 0 2ch;
-  white-space: pre-wrap;
-}
-
-/* Prompt bar at bottom */
-.prompt-bar {
-  flex-shrink: 0;
-  background: var(--bg);
-  border-top: 1px solid var(--c-rule);
-  padding: 0.75rem max(1.25rem, calc(50% - 460px));
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.prompt-text {
-  white-space: nowrap;
-}
-
-.prompt-user { color: var(--c-h1); }
-.prompt-host { color: var(--c-bold); }
-.prompt-path { color: var(--c-code); }
-
-.prompt-input {
-  flex: 1;
-  background: transparent;
-  border: none;
-  outline: none;
-  color: var(--fg);
-  font: inherit;
+h2 {
+  color: var(--fg-bright);
+  font-family: inherit;
   font-size: inherit;
-  line-height: inherit;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
+}
+
+p {
+  margin: 0 0 1rem;
+}
+
+strong {
+  color: var(--fg-bright);
+  font-weight: 700;
+}
+
+em {
+  color: var(--fg-dim);
+  font-style: normal;
+}
+
+a {
+  color: var(--fg-bright);
+  text-decoration: none;
+  border-bottom: 1px solid var(--fg-dim);
+}
+
+a:hover {
+  border-bottom-color: var(--fg-bright);
+}
+
+/* Job title + date stacking */
+p:has(em) > strong:first-child {
+  display: block;
+  margin-bottom: 0.15rem;
+}
+
+ul {
+  list-style: none;
   padding: 0;
-  margin: 0;
+  margin: 0 0 1.25rem;
 }
 
-.prompt-input::placeholder {
-  color: var(--c-dim);
+li {
+  position: relative;
+  padding-left: 2.5rem;
+  margin-bottom: 0.75rem;
 }
 
-/* Blinking cursor */
-.cursor {
-  display: inline-block;
-  width: 0.6em;
-  height: 1.1em;
-  background: var(--c-prompt);
-  animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
-  margin-left: 1px;
+li::before {
+  content: '[*]';
+  position: absolute;
+  left: 0;
+  color: var(--fg-dim);
+  font-weight: 400;
 }
 
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
+::selection {
+  background: rgba(255,255,255,0.12);
+  color: var(--accent);
 }
 
-::selection { background: var(--c-link); color: var(--bg); }
-
-::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar { width: 8px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: #21262d; }
-::-webkit-scrollbar-thumb:hover { background: #30363d; }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
 
 @media (max-width: 600px) {
   body { font-size: 13px; }
-  .terminal-scroll { padding: 1.25rem 1rem 1rem; }
+  .container { padding: 1.5rem 1rem 3rem; }
+  li { padding-left: 2rem; }
 }
 
 @media print {
-  @page { size: A4 portrait; margin: 1cm; }
+  @page { size: A4 portrait; margin: 1.5cm; }
   html, body {
     background: #fff;
     color: #000;
     height: auto;
     overflow: visible;
   }
-  body { font-size: 8pt; line-height: 1.25; padding: 0; }
-  .terminal { height: auto; }
-  .terminal-scroll {
-    overflow: visible;
-    padding: 0;
-  }
-  pre.raw-md { 
-    font-size: 8pt; 
-    line-height: 1.25; 
-    opacity: 1;
-  }
-  pre.raw-md .h1, pre.raw-md .h2, pre.raw-md .h3, pre.raw-md .b { color: #000; }
-  pre.raw-md .i, pre.raw-md .tag, pre.raw-md .bullet,
-  pre.raw-md .code, pre.raw-md .quote { color: #444; }
-  pre.raw-md .link { color: #000; text-decoration: underline; }
-  pre.raw-md .banner { color: #000; }
-  pre.raw-md .prompt { color: #000; }
-  pre.raw-md .rule { color: #999; }
-  .prompt-bar, .cmd-output { display: none; }
+  body { font-size: 9pt; line-height: 1.35; }
+  .container { padding: 0; max-width: none; }
+  h1, h2, strong { color: #000; }
+  a { color: #000; border-bottom: 1px solid #999; }
+  pre { color: #666; }
+  li::before { color: #999; }
 }
 </style>
 </head>
 <body>
-<div class="terminal">
-  <div class="terminal-scroll" id="terminal-scroll">
-    {{ content }}
-    <div class="cmd-output" id="cmd-output"></div>
-  </div>
-  <div class="prompt-bar">
-    <span class="prompt-text"><span class="prompt-user">visitor</span>@<span class="prompt-host">cv</span>:<span class="prompt-path">~</span>$</span>
-    <input type="text" class="prompt-input" id="prompt-input" autocomplete="off" spellcheck="false" placeholder="type 'help' for commands">
-    <span class="cursor" id="cursor"></span>
-  </div>
+<div class="container">
+  {{ content }}
 </div>
-
-<script>
-(function() {
-  'use strict';
-
-  const pre = document.querySelector('pre.raw-md');
-  if (!pre) return;
-
-  const raw = pre.textContent;
-  const terminalScroll = document.getElementById('terminal-scroll');
-  const cmdOutput = document.getElementById('cmd-output');
-  const promptInput = document.getElementById('prompt-input');
-  const cursor = document.getElementById('cursor');
-
-  let navTarget = null;
-  let cmdHistory = [];
-  let historyIndex = -1;
-
-  function esc(s) {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
-  function highlightInline(line) {
-    let s = esc(line);
-
-    // ASCII art in code blocks
-    if (/^[\s█░▒▓▄▀▐▌▖▗▘▝▙▛▜▟▞▚╔╗╚╝║═╠╣╦╩╬┌┐└┘│─]*$/.test(line)) {
-      if (/[█░▒▓▄▀▐▌▖▗▘▝▙▛▜▟▞▚╔╗╚╝║═╠╣╦╩╬┌┐└┘│─]/.test(line)) {
-        return '<span class="banner">' + s + '</span>';
-      }
-    }
-
-    // Headers
-    let m;
-    if (m = line.match(/^(#{1,3}) (.*)$/)) {
-      const level = m[1].length;
-      return '<span class="h' + level + '">' + s + '</span>';
-    }
-
-    // Blockquote
-    if (/^&gt; /.test(s)) {
-      return '<span class="quote">' + s + '</span>';
-    }
-
-    // Inline tokens
-    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span class="link">[$1]($2)</span>');
-    s = s.replace(/\*\*([^*\n]+)\*\*/g, '<span class="b">**$1**</span>');
-    s = s.replace(/^\* /, '<span class="bullet">*</span> ');
-
-    s = s.split(/(<span [^>]+>[\s\S]*?<\/span>)/g).map(part => {
-      if (part.startsWith('<span ')) return part;
-      return part.replace(/(^|[^*\w])\*([^*\n]+)\*(?!\*)/g, '$1<span class="i">*$2*</span>');
-    }).join('');
-
-    s = s.split(/(<span [^>]+>[\s\S]*?<\/span>)/g).map(part => {
-      if (part.startsWith('<span ')) return part;
-      return part.replace(/`([^`\n]+)`/g, '<span class="code">`$1`</span>');
-    }).join('');
-
-    s = s.split(/(<span [^>]+>[\s\S]*?<\/span>)/g).map(part => {
-      if (part.startsWith('<span ')) return part;
-      return part.replace(/&lt;\/?[a-zA-Z][^&]*&gt;/g, m => '<span class="tag">' + m + '</span>');
-    }).join('');
-
-    return s;
-  }
-
-  // Render content with syntax highlighting
-  function renderContent() {
-    const lines = raw.split('\n');
-    const highlighted = lines.map(highlightInline).join('\n');
-    pre.innerHTML = highlighted;
-    pre.classList.add('loaded');
-  }
-
-  // Type text with cursor
-  function typeText(element, text, delay = 15) {
-    return new Promise(resolve => {
-      let i = 0;
-      cursor.style.opacity = '1';
-      
-      function typeChar() {
-        if (i < text.length) {
-          element.textContent += text[i];
-          i++;
-          terminalScroll.scrollTop = terminalScroll.scrollHeight;
-          setTimeout(typeChar, delay);
-        } else {
-          resolve();
-        }
-      }
-      typeChar();
-    });
-  }
-
-  // Command handlers
-  const commands = {
-    help: () => `Available commands:
-  about      - Show introduction
-  skills     - Jump to skills section
-  experience - Jump to experience section  
-  projects   - Jump to projects section
-  contact    - Show contact information
-  date       - Current date/time
-  whoami     - Current user
-  clear      - Clear command history
-
-Pro tip: Try 'sudo hire me'`,
-
-    about: () => `Nicolas Karasiak - Staff Data & ML Engineer
-
-8+ years building scalable geospatial data & ML platforms.
-Open-source author with 600+ citations on OSS and 300+ for papers.
-Based in Toulouse, open to remote work.`,
-
-    skills: () => {
-      scrollToSection('## SKILLS');
-      return 'Jumping to Skills section...';
-    },
-
-    experience: () => {
-      scrollToSection('## EXPERIENCE');
-      return 'Jumping to Experience section...';
-    },
-
-    projects: () => {
-      scrollToSection('## PROJECTS');
-      return 'Jumping to Projects & Open Source section...';
-    },
-
-    contact: () => `Email:  karasiak.nicolas@gmail.com
-Phone:  +33 6 01 76 77 08
-GitHub: github.com/nkarasiak`,
-
-    date: () => new Date().toString(),
-
-    whoami: () => 'recruiter',
-
-    clear: () => {
-      cmdOutput.innerHTML = '';
-      terminalScroll.scrollTop = 0;
-      return null;
-    },
-
-    'sudo hire me': async () => {
-      await typeText(cmdOutput.lastElementChild?.querySelector('.cmd-response') || cmdOutput, 
-        '\n[sudo] password for recruiter: ********', 30);
-      await new Promise(r => setTimeout(r, 500));
-      return `\n\nProcessing application...\n\n✓ Technical skills validated\n✓ Open source contributions verified\n✓ Cost optimization record confirmed\n\nStatus: APPROVED 🎉\n\nContact: karasiak.nicolas@gmail.com`;
-    }
-  };
-
-  function scrollToSection(headerText) {
-    const sectionName = headerText.replace('## ', '').toLowerCase().trim();
-    const headers = pre.querySelectorAll('.h2');
-    
-    for (const header of headers) {
-      const text = header.textContent.toLowerCase().trim();
-      const isMatch = text.includes(sectionName) || 
-          (sectionName === 'experience' && text.includes('experience')) ||
-          (sectionName === 'projects' && (text.includes('projects') || text.includes('open source'))) ||
-          (sectionName === 'skills' && text.includes('skills'));
-      
-      if (isMatch) {
-        navTarget = header;
-        return true;
-      }
-    }
-    return false;
-  }
-
-  async function executeCommand(input) {
-    const trimmed = input.trim();
-    if (!trimmed) return;
-
-    const lower = trimmed.toLowerCase();
-
-    // Add to history
-    if (cmdHistory.length === 0 || cmdHistory[cmdHistory.length - 1] !== lower) {
-      cmdHistory.push(lower);
-    }
-    historyIndex = cmdHistory.length;
-
-    // Display command
-    const entry = document.createElement('div');
-    entry.className = 'cmd-entry';
-    entry.innerHTML = `<div class="cmd-line"><span class="cmd-prompt-user">visitor</span>@<span class="cmd-prompt-host">cv</span>:<span class="cmd-prompt-path">~</span>$ ${esc(trimmed)}</div>`;
-    cmdOutput.appendChild(entry);
-
-    // Execute
-    let response;
-    if (commands[lower] || (lower.startsWith('sudo ') && commands[lower])) {
-      response = await commands[lower]();
-    } else if (lower.startsWith('sudo ')) {
-      response = `sudo: ${lower.slice(5)}: Permission denied\nTry 'sudo hire me' instead 😉`;
-    } else {
-      response = `${lower.split(' ')[0]}: command not found\nType 'help' for available commands.`;
-    }
-
-    if (response !== null) {
-      const respEl = document.createElement('div');
-      respEl.className = 'cmd-response';
-      entry.appendChild(respEl);
-      await typeText(respEl, response, 8);
-    }
-
-    if (navTarget) {
-      const headerRect = navTarget.getBoundingClientRect();
-      const scrollRect = terminalScroll.getBoundingClientRect();
-      terminalScroll.scrollTop += headerRect.top - scrollRect.top - 20;
-      navTarget = null;
-    } else {
-      terminalScroll.scrollTop = terminalScroll.scrollHeight;
-    }
-  }
-
-  // Event listeners
-  promptInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      executeCommand(promptInput.value);
-      promptInput.value = '';
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (historyIndex > 0) {
-        historyIndex--;
-        promptInput.value = cmdHistory[historyIndex];
-      }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (historyIndex < cmdHistory.length - 1) {
-        historyIndex++;
-        promptInput.value = cmdHistory[historyIndex];
-      } else {
-        historyIndex = cmdHistory.length;
-        promptInput.value = '';
-      }
-    } else if (e.key === 'l' && e.ctrlKey) {
-      e.preventDefault();
-      commands.clear();
-    }
-  });
-
-  // Keep focus on prompt
-  terminalScroll.addEventListener('click', (e) => {
-    if (e.target.tagName !== 'A') {
-      promptInput.focus();
-    }
-  });
-
-  // Initialize
-  renderContent();
-  promptInput.focus();
-})();
-</script>
 </body>
 </html>
