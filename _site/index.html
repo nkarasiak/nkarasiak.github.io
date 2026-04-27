@@ -5,966 +5,276 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Nicolas Karasiak</title>
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   TUI/DOS-STYLE CV LAYOUT
-   ═══════════════════════════════════════════════════════════════ */
-
 :root {
   --bg: #0c0c0c;
-  --bg-panel: #141414;
-  --fg: #cccccc;
-  --fg-dim: #777777;
-  --fg-inactive: #555555;
-  --accent: #ffb000;        /* Amber */
-  --accent-bright: #ffcc00;
-  --border: #444444;
-  --border-dim: #333333;
-  --selection-bg: #ffb000;
-  --selection-fg: #0c0c0c;
+  --fg: #888888;
+  --fg-bright: #d0d0d0;
+  --fg-dim: #555555;
+  --accent: #ffffff;
 }
 
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+html, body {
   margin: 0;
   padding: 0;
-}
-
-html {
   background: var(--bg);
   color: var(--fg);
-  font-family: ui-monospace, Consolas, "Courier New", monospace;
-  font-size: 15px;
-  line-height: 1.6;
-  height: 100%;
 }
 
 body {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  padding: 0.75em;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Scanline overlay */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.03),
-    rgba(0, 0, 0, 0.03) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  pointer-events: none;
-  z-index: 1000;
+.container {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   MAIN FRAME (Double-line border style)
-   ═══════════════════════════════════════════════════════════════ */
-
-.tui-frame {
-  border: 2px solid var(--border);
-  background: var(--bg-panel);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  position: relative;
+pre {
+  background: transparent;
+  color: #707070;
+  font-family: inherit;
+  font-size: 0.6rem;
+  line-height: 1.35;
+  overflow-x: hidden;
+  margin: 0 0 1.5rem;
 }
 
-.tui-frame::before,
-.tui-frame::after {
-  content: "┌┐";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  font-size: 12px;
-  line-height: 1;
-  color: var(--border);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 4px;
-  pointer-events: none;
+code {
+  font-family: inherit;
+  color: var(--fg-bright);
 }
 
-.tui-frame::after {
-  content: "└┘";
-  top: auto;
-  bottom: -2px;
+pre code {
+  color: #707070;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   TITLE BAR
-   ═══════════════════════════════════════════════════════════════ */
-
-.title-bar {
-  border-bottom: 1px solid var(--border);
-  padding: 0.5em 0.75em;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  gap: 0.75em;
-}
-
-.title-icon {
+h1 {
   color: var(--accent);
-  font-weight: bold;
+  font-family: inherit;
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  margin: 0 0 0.6rem;
 }
 
-.title-text {
-  font-weight: bold;
+h2 {
+  color: var(--fg-bright);
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 700;
+  margin: 2.5rem 0 1rem;
 }
 
-.title-divider {
-  color: var(--fg-inactive);
+p {
+  margin: 0 0 1rem;
 }
 
-.title-subtitle {
+strong {
+  color: var(--fg-bright);
+  font-weight: 700;
+}
+
+em {
   color: var(--fg-dim);
-}
-
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 1.2em;
-  background: var(--accent);
-  margin-left: 0.25em;
-  animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CONTENT AREA
-   ═══════════════════════════════════════════════════════════════ */
-
-.content-area {
-  flex: 1;
-  padding: 0.75em;
-  overflow-y: auto;
-}
-
-/* Section panel (single-line border) */
-.section-panel {
-  border: 1px solid var(--border);
-  background: var(--bg);
-  height: 100%;
-}
-
-.section-header {
-  border-bottom: 1px solid var(--border);
-  padding: 0.4em 0.75em;
-  background: var(--bg-panel);
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-}
-
-.section-title {
-  font-weight: bold;
-  color: var(--accent);
-}
-
-.section-content {
-  padding: 1em 0.75em;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CONTENT STYLING
-   ═══════════════════════════════════════════════════════════════ */
-
-.section-intro {
-  color: var(--fg-dim);
-  margin-bottom: 1em;
-  font-style: italic;
-}
-
-.section-content ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.section-content li {
-  padding: 0.35em 0;
-  padding-left: 1.25em;
-  position: relative;
-}
-
-.section-content li::before {
-  content: "►";
-  position: absolute;
-  left: 0;
-  color: var(--fg-inactive);
-  font-size: 0.8em;
-  top: 0.45em;
-}
-
-.section-content p {
-  margin-bottom: 0.75em;
-}
-
-.highlight {
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.highlight-bright {
-  color: var(--accent-bright);
-  font-weight: bold;
-}
-
-.dim {
-  color: var(--fg-dim);
-}
-
-.code-inline {
-  color: var(--fg-dim);
-  font-size: 0.95em;
-}
-
-.job-title {
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-}
-
-.job-title:first-child {
-  margin-top: 0;
-}
-
-.company {
-  font-weight: bold;
-}
-
-.dates {
-  color: var(--fg-dim);
-  font-size: 0.9em;
-}
-
-/* Skills grid */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.75em;
-}
-
-.skill-row {
-  display: flex;
-  gap: 0.75em;
-  flex-wrap: wrap;
-}
-
-.skill-category {
-  color: var(--fg);
-  font-weight: bold;
-  min-width: 100px;
-}
-
-.skill-items {
-  color: var(--fg-dim);
-}
-
-/* Philosophy section */
-.philosophy-list {
-  font-style: italic;
-}
-
-.philosophy-list li {
-  padding-left: 1.5em;
-}
-
-.philosophy-list li::before {
-  content: "→";
-  color: var(--accent);
   font-style: normal;
 }
 
-/* Contact links */
-.contact-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75em;
-}
-
-.contact-link {
-  color: var(--accent);
+a {
+  color: var(--fg-bright);
   text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.5em 0;
+  border-bottom: 1px solid var(--fg-dim);
 }
 
-.contact-link::before {
-  content: "→";
-  color: var(--fg-inactive);
+a:hover {
+  border-bottom-color: var(--fg-bright);
 }
 
-.contact-link:hover,
-.contact-link:focus {
-  text-decoration: underline;
+/* Job title + date stacking */
+p:has(em) > strong:first-child {
+  display: block;
+  margin-bottom: 0.15rem;
 }
 
-.closing-note {
-  margin-top: 1.5em;
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.25rem;
+}
+
+li {
+  position: relative;
+  padding-left: 2.5rem;
+  margin-bottom: 0.75rem;
+}
+
+li::before {
+  content: '[*]';
+  position: absolute;
+  left: 0;
   color: var(--fg-dim);
-  font-style: italic;
+  font-weight: 400;
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   BUTTON BAR
-   ═══════════════════════════════════════════════════════════════ */
-
-.button-bar {
-  border-top: 1px solid var(--border);
-  padding: 0.5em 0.75em;
-  background: var(--bg);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25em 0.75em;
-  justify-content: center;
-}
-
-.tui-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.1em;
-  padding: 0.15em 0.4em;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--fg);
-  font-family: inherit;
-  font-size: inherit;
-  cursor: pointer;
-  text-decoration: none;
-  line-height: 1.4;
-  transition: none;
-}
-
-.tui-btn:hover {
-  border-color: var(--border);
-}
-
-.tui-btn:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.tui-btn.active {
-  background: var(--accent);
-  color: var(--selection-fg);
-  border-color: var(--accent);
-}
-
-.tui-btn.active:hover {
-  background: var(--accent-bright);
-  border-color: var(--accent-bright);
-}
-
-.tui-btn kbd {
-  color: var(--accent);
-  font-family: inherit;
-  text-decoration: underline;
-}
-
-.tui-btn.active kbd {
-  color: var(--selection-fg);
-  text-decoration: underline;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   STATUS BAR
-   ═══════════════════════════════════════════════════════════════ */
-
-.status-bar {
-  border-top: 1px solid var(--border);
-  padding: 0.35em 0.75em;
-  background: var(--bg);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85em;
-  color: var(--fg-dim);
-}
-
-.status-hints {
-  display: flex;
-  gap: 1.5em;
-}
-
-.status-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-}
-
-.status-hint kbd {
-  color: var(--accent);
-  font-family: inherit;
-}
-
-.clock {
-  font-variant-numeric: tabular-nums;
+::selection {
+  background: rgba(255,255,255,0.12);
   color: var(--accent);
 }
 
-/* Touch device: hide keyboard hints */
-@media (hover: none) and (pointer: coarse) {
-  .status-hints {
-    display: none;
-  }
-  .status-bar {
-    justify-content: center;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
 
 @media (max-width: 600px) {
-  html {
-    font-size: 14px;
-  }
-  
-  body {
-    padding: 0.5em;
-  }
-  
-  .content-area {
-    padding: 0.5em;
-  }
-  
-  .section-content {
-    padding: 0.75em 0.5em;
-  }
-  
-  .button-bar {
-    gap: 0.2em 0.5em;
-    padding: 0.4em 0.5em;
-  }
-  
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .status-hints {
-    gap: 0.75em;
-    font-size: 0.9em;
-  }
+  body { font-size: 13px; }
+  .container { padding: 1.5rem 1rem 3rem; }
+  li { padding-left: 2rem; }
 }
-
-@media (max-width: 400px) {
-  html {
-    font-size: 13px;
-  }
-  
-  .title-bar {
-    flex-wrap: wrap;
-    gap: 0.3em;
-  }
-  
-  .button-bar {
-    justify-content: flex-start;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PRINT
-   ═══════════════════════════════════════════════════════════════ */
 
 @media print {
-  body::before {
-    display: none;
-  }
-  
-  .tui-frame {
-    border-color: #000;
-    background: #fff;
-  }
-  
-  .title-bar,
-  .button-bar,
-  .status-bar {
-    display: none;
-  }
-  
-  html,
-  body {
+  @page { size: A4 portrait; margin: 1.5cm; }
+  html, body {
     background: #fff;
     color: #000;
+    height: auto;
+    overflow: visible;
   }
-  
-  .section-panel {
-    border-color: #000;
-    background: #fff;
-  }
-  
-  .section-header {
-    border-color: #000;
-    background: #fff;
-  }
-  
-  .section-title {
-    color: #000;
-  }
-  
-  .highlight,
-  .highlight-bright {
-    color: #000;
-  }
-  
-  .cursor {
-    display: none;
-  }
-  
-  body {
-    padding: 1em;
-  }
-  
-  .content-area {
-    padding: 0;
-  }
-  
-  .section-content {
-    padding: 1em 0;
-  }
-}
-
-/* Hide inactive sections */
-.section-panel[data-section] {
-  display: none;
-}
-
-.section-panel[data-section].active {
-  display: block;
-}
-
-/* Scrollbar styling */
-.content-area::-webkit-scrollbar {
-  width: 8px;
-}
-
-.content-area::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-
-.content-area::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 0;
-}
-
-.content-area::-webkit-scrollbar-thumb:hover {
-  background: var(--fg-inactive);
+  body { font-size: 9pt; line-height: 1.35; }
+  .container { padding: 0; max-width: none; }
+  h1, h2, strong { color: #000; }
+  a { color: #000; border-bottom: 1px solid #999; }
+  pre { color: #666; }
+  li::before { color: #999; }
 }
 </style>
 </head>
 <body>
+<div class="container">
+  <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>███  ██ ██ ▄█████ ▄████▄ ██     ▄████▄ ▄█████        
+██ ▀▄██ ██ ██     ██  ██ ██     ██▄▄██ ▀▀▀▄▄▄        
+██   ██ ██ ▀█████ ▀████▀ ██████ ██  ██ █████▀                                                       
+██ ▄█▀ ▄████▄ █████▄  ▄████▄ ▄█████ ██ ▄████▄ ██ ▄█▀ 
+████   ██▄▄██ ██▄▄██▄ ██▄▄██ ▀▀▀▄▄▄ ██ ██▄▄██ ████   
+██ ▀█▄ ██  ██ ██   ██ ██  ██ █████▀ ██ ██  ██ ██ ▀█▄ 
+</code></pre></div></div>
 
-<div class="tui-frame">
-  <!-- Title Bar -->
-  <div class="title-bar">
-    <span class="title-icon">>_</span>
-    <span class="title-text">NICOLAS KARASIAK</span>
-    <span class="title-divider">───</span>
-    <span class="title-subtitle">Staff Data Engineer, Geospatial & ML Platforms</span>
-    <span class="cursor"></span>
-  </div>
+<p><strong>Staff Data &amp; ML Engineer — Geospatial Platforms</strong></p>
 
-  <!-- Content Area -->
-  <div class="content-area">
-    <!-- Impact Section -->
-    <div class="section-panel" data-section="impact">
-      <div class="section-header">
-        <span class="section-title">IMPACT</span>
-      </div>
-      <div class="section-content">
-        <p class="section-intro">Read this first.</p>
-        <ul>
-          <li><span class="highlight-bright">20M+ parcels</span> processed per year (full-country scale, 5-day revisit)</li>
-          <li>Terabytes → Raw Sentinel-2 to ML-ready datasets in <span class="highlight">~15 minutes</span></li>
-          <li><span class="highlight">~100x cost reduction</span> on production workloads</li>
-          <li>Systems designed for reliability, not hope</li>
-        </ul>
-      </div>
-    </div>
+<p>8+ years building scalable geospatial data &amp; ML systems on satellite imagery.
+Open-source maintainer · 600+ scientific citations across OSS tools · 300+ on peer-reviewed papers.</p>
 
-    <!-- Build Section -->
-    <div class="section-panel" data-section="build">
-      <div class="section-header">
-        <span class="section-title">WHAT I BUILD</span>
-      </div>
-      <div class="section-content">
-        <ul>
-          <li>Distributed geospatial platforms <span class="dim">(STAC, Xarray, datacube, Dask, GDAL)</span></li>
-          <li>Production ML pipelines <span class="dim">(time-series, remote sensing)</span></li>
-          <li>High-performance data tooling <span class="dim">(Python + Rust)</span></li>
-          <li>Developer-first APIs & SDKs</li>
-        </ul>
-      </div>
-    </div>
+<h2 id="experience">EXPERIENCE</h2>
 
-    <!-- Current Section -->
-    <div class="section-panel" data-section="current">
-      <div class="section-header">
-        <span class="section-title">CURRENT</span>
-      </div>
-      <div class="section-content">
-        <p class="job-title">
-          <span class="company">EarthDaily</span>, Data Scientist / Data Engineer <span class="dates">(2022–present)</span>
-        </p>
-        <ul>
-          <li>Built core geospatial platform <span class="dim">(STAC, Xarray, datacube, Dask, GDAL)</span></li>
-          <li>Author of <span class="highlight">EarthDaily Python SDK</span> (official client)</li>
-          <li>Designed and developed <span class="highlight">EarthArray</span> (high-performance internal library)</li>
-          <li>Designed and developed <span class="highlight">Unicrop</span> (smart interoperability between any groundtruth providers)</li>
-          <li>Optimized AWS infra <span class="dim">(EC2, Argo, ARM64)</span></li>
-          <li>Rewrote critical paths in Rust</li>
-        </ul>
-      </div>
-    </div>
+<p><strong>EarthDaily — Data Scientist / Data Engineer</strong>
+<em>Toulouse · September 2022 – Present</em></p>
 
-    <!-- Experience Section -->
-    <div class="section-panel" data-section="exp">
-      <div class="section-header">
-        <span class="section-title">BEFORE</span>
-      </div>
-      <div class="section-content">
-        <p class="job-title">
-          <span class="company">Pixstart</span>, Remote Sensing / ML Engineer <span class="dates">(2020–2022)</span>
-        </p>
-        <ul>
-          <li>Satellite change detection pipelines</li>
-          <li>Scalable geospatial processing workflows</li>
-        </ul>
-        
-        <p class="job-title">
-          <span class="company">INRA Dynafor</span>, PhD <span class="dates">(2016–2019)</span>
-        </p>
-        <ul>
-          <li>Forest mapping using time-series <span class="dim">(Formosat-2, Sentinel-2)</span></li>
-          <li>Spatial ML evaluation improvements</li>
-        </ul>
-      </div>
-    </div>
+<ul>
+  <li>
+    <p>Designed and scaled a geospatial data platform (STAC, datacube, Dask) processing <strong>20M+ agricultural parcels on a 5-day refresh</strong> — standardized pipelines from raw satellite data to ML-ready outputs, <strong>~100× reduction in per-parcel processing cost</strong></p>
+  </li>
+  <li>
+    <p>Optimized large-scale distributed workloads on AWS (EC2, EKS, Argo); led ARM64 (Graviton) migration → <strong>~40% compute cost cut</strong> on targeted workloads</p>
+  </li>
+  <li>
+    <p>Contributed to core open-source geospatial libraries (<code class="language-plaintext highlighter-rouge">xarray</code>, <code class="language-plaintext highlighter-rouge">odc-stac</code>, <code class="language-plaintext highlighter-rouge">geotessera</code>) — fixed performance bottlenecks and reliability issues in production STAC workflows</p>
+  </li>
+  <li>
+    <p>Built AI-powered internal developer tooling — Claude skills, agents, and slash commands for performance bottleneck detection &amp; remediation, conventional commits, and engineering-standards enforcement; adopted across <strong>3 teams</strong></p>
+  </li>
+</ul>
 
-    <!-- Open Source Section -->
-    <div class="section-panel" data-section="oss">
-      <div class="section-header">
-        <span class="section-title">OPEN SOURCE</span>
-      </div>
-      <div class="section-content">
-        <p class="section-intro">Proof of work.</p>
-        <ul>
-          <li><span class="highlight">EarthDaily Python SDK</span> → official client</li>
-          <li><span class="highlight">QuantizedGeoParquet</span> → ~70% smaller than GeoParquet</li>
-          <li><span class="highlight">QGIS Dzetsaka</span> → 200k+ downloads, 600+ citations</li>
-          <li><span class="highlight">QGIS MCP</span> → 50+ GitHub stars in first month</li>
-        </ul>
-      </div>
-    </div>
+<p><strong>Pixstart — Remote Sensing Data Scientist / ML Engineer</strong>
+<em>Toulouse · September 2020 – September 2022</em></p>
 
-    <!-- Skills Section -->
-    <div class="section-panel" data-section="skills">
-      <div class="section-header">
-        <span class="section-title">SKILLS</span>
-      </div>
-      <div class="section-content">
-        <div class="skills-grid">
-          <div class="skill-row">
-            <span class="skill-category">Languages</span>
-            <span class="skill-items">Python, Rust</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">Systems</span>
-            <span class="skill-items">Distributed pipelines (Dask), data platforms, API/SDK design</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">Geo</span>
-            <span class="skill-items">Xarray, STAC, GeoParquet, GDAL, rasterio, rioxarray</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">ML</span>
-            <span class="skill-items">scikit-learn, time-series</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">Infra</span>
-            <span class="skill-items">AWS (EC2, S3), Docker, ARM64</span>
-          </div>
-        </div>
-      </div>
-    </div>
+<ul>
+  <li>
+    <p>Built satellite-imagery change detection workflows in production</p>
+  </li>
+  <li>
+    <p>Developed geospatial pipelines blending ML models with domain rules → analysis-ready outputs</p>
+  </li>
+  <li>
+    <p>Translated client requirements into scalable geospatial solutions</p>
+  </li>
+</ul>
 
-    <!-- Think Section -->
-    <div class="section-panel" data-section="think">
-      <div class="section-header">
-        <span class="section-title">HOW I THINK</span>
-      </div>
-      <div class="section-content">
-        <ul class="philosophy-list">
-          <li>Performance is a feature</li>
-          <li>Latency budget is real</li>
-          <li>I/O bound until proven otherwise</li>
-          <li>Every bottleneck has a solution</li>
-          <li>Otherwise: build one</li>
-        </ul>
-      </div>
-    </div>
+<p><strong>Guiana Amazonian Park — Remote Sensing Intern</strong>
+<em>Cayenne · March 2016 – September 2016</em></p>
 
-    <!-- Contact Section -->
-    <div class="section-panel" data-section="contact">
-      <div class="section-header">
-        <span class="section-title">CONTACT</span>
-      </div>
-      <div class="section-content">
-        <div class="contact-links">
-          <a href="mailto:karasiak.nicolas@gmail.com" class="contact-link">karasiak.nicolas@gmail.com</a>
-          <a href="https://github.com/nkarasiak" class="contact-link">github.com/nkarasiak</a>
-        </div>
-        <p class="closing-note">If you read this far, we'll probably get along.</p>
-      </div>
-    </div>
-  </div>
+<ul>
+  <li>Built open-source processing pipelines using Python, R, QGIS, and OTB</li>
+</ul>
 
-  <!-- Button Bar -->
-  <div class="button-bar" role="tablist" aria-label="CV Sections">
-    <button class="tui-btn active" data-target="impact" role="tab" aria-selected="true" tabindex="0">
-      <kbd>I</kbd>mpact
-    </button>
-    <button class="tui-btn" data-target="build" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>B</kbd>uild
-    </button>
-    <button class="tui-btn" data-target="current" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>C</kbd>urrent
-    </button>
-    <button class="tui-btn" data-target="exp" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>E</kbd>xp
-    </button>
-    <button class="tui-btn" data-target="oss" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>O</kbd>ss
-    </button>
-    <button class="tui-btn" data-target="skills" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>S</kbd>kills
-    </button>
-    <button class="tui-btn" data-target="think" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>T</kbd>hink
-    </button>
-    <button class="tui-btn" data-target="contact" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>@</kbd>Contact
-    </button>
-  </div>
+<h2 id="education">EDUCATION</h2>
 
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <div class="status-hints">
-      <span class="status-hint"><kbd>Alt</kbd>+Letter Jump</span>
-      <span class="status-hint"><kbd>Tab</kbd> Next</span>
-      <span class="status-hint"><kbd>↑↓</kbd> Navigate</span>
-    </div>
-    <span class="clock" id="clock">--:--:--</span>
-  </div>
+<p><strong>PhD, Remote Sensing Time Series — Dynafor / INRA</strong>
+<em>Toulouse · October 2016 – August 2019</em></p>
+
+<ul>
+  <li>
+    <p>Forest species mapping with satellite time series (Sentinel-2, Formosat-2) — novel approaches combining phenology and canopy structure</p>
+  </li>
+  <li>
+    <p>Investigated spatial autocorrelation effects on model evaluation, improving robustness of performance metrics</p>
+  </li>
+  <li>
+    <p>Published 3 peer-reviewed papers; delivered operational geospatial applications</p>
+  </li>
+  <li>
+    <p>Built and maintained open-source Python libraries (Museo ToolBox, Museo Pheno) for reproducible geospatial workflows</p>
+  </li>
+</ul>
+
+<h2 id="projects--open-source">PROJECTS &amp; OPEN SOURCE</h2>
+
+<ul>
+  <li>
+    <p><strong>EarthDaily Python SDK</strong> — official client; sole designer/maintainer for 1+ year</p>
+  </li>
+  <li>
+    <p><strong>QuantizedGeoParquet (QGP)</strong> — ~70% lighter than GeoParquet via optimized geometry quantization</p>
+  </li>
+  <li>
+    <p><strong>QGIS Dzetsaka Plugin</strong> — supervised classification plugin; 200k+ downloads, cited in 600+ scientific publications</p>
+  </li>
+  <li>
+    <p><strong>QGIS MCP Plugin</strong> — Model Context Protocol bridge for QGIS; 50+ GitHub stars in first month</p>
+  </li>
+</ul>
+
+<h2 id="skills">SKILLS</h2>
+
+<p><strong>Languages</strong> → Python, Rust, SQL</p>
+
+<p><strong>Distributed</strong> → Dask, large-scale data pipelines</p>
+
+<p><strong>Geospatial</strong> → STAC, GeoParquet, GDAL, rasterio, xarray, pystac</p>
+
+<p><strong>ML</strong> → scikit-learn, PyTorch, Lightning, time-series, geospatial ML</p>
+
+<p><strong>Platform</strong> → API/SDK design, datacube architectures, system design</p>
+
+<p><strong>Performance</strong> → ARM64 (Graviton), profiling, cost optimization</p>
+
+<p><strong>Infra</strong> → AWS (EC2, EKS, S3), Docker, Argo Workflows</p>
+
+<h2 id="contact">CONTACT</h2>
+
+<p><a href="mailto:karasiak.nicolas@gmail.com">karasiak.nicolas@gmail.com</a></p>
+
+<p><a href="tel:+33601767708">+33 6 01 76 77 08</a></p>
+
+<p><a href="https://github.com/nkarasiak">github.com/nkarasiak</a></p>
+
+<p><a href="https://scholar.google.com/citations?user=71cgDAoAAAAJ">Google Scholar</a></p>
+
+
 </div>
-
-<script>
-/* ═══════════════════════════════════════════════════════════════
-   TUI/DOS NAVIGATION LOGIC
-   ═══════════════════════════════════════════════════════════════ */
-
-(function() {
-  'use strict';
-  
-  const buttons = Array.from(document.querySelectorAll('.tui-btn'));
-  const sections = Array.from(document.querySelectorAll('.section-panel[data-section]'));
-  const sectionMap = new Map();
-  
-  // Map buttons to sections
-  buttons.forEach(btn => {
-    const target = btn.dataset.target;
-    const section = document.querySelector(`.section-panel[data-section="${target}"]`);
-    if (section) {
-      sectionMap.set(btn, section);
-    }
-  });
-  
-  let activeIndex = 0;
-  
-  function setActive(index) {
-    if (index < 0) index = buttons.length - 1;
-    if (index >= buttons.length) index = 0;
-    
-    // Update buttons
-    buttons.forEach((btn, i) => {
-      const isActive = i === index;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-selected', isActive);
-      btn.setAttribute('tabindex', isActive ? '0' : '-1');
-    });
-    
-    // Update sections
-    sections.forEach((section, i) => {
-      const btn = buttons[i];
-      const isActive = i === index;
-      section.classList.toggle('active', isActive);
-      if (isActive) {
-        section.scrollTop = 0;
-      }
-    });
-    
-    activeIndex = index;
-    
-    // Focus the active button
-    buttons[activeIndex].focus();
-  }
-  
-  // Click handlers
-  buttons.forEach((btn, index) => {
-    btn.addEventListener('click', () => setActive(index));
-  });
-  
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    // Ignore if typing in an input
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    
-    let handled = false;
-    
-    switch (e.key) {
-      case 'Tab':
-        e.preventDefault();
-        if (e.shiftKey) {
-          setActive(activeIndex - 1);
-        } else {
-          setActive(activeIndex + 1);
-        }
-        handled = true;
-        break;
-        
-      case 'ArrowRight':
-      case 'ArrowDown':
-        e.preventDefault();
-        setActive(activeIndex + 1);
-        handled = true;
-        break;
-        
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        e.preventDefault();
-        setActive(activeIndex - 1);
-        handled = true;
-        break;
-        
-      case 'Home':
-        e.preventDefault();
-        setActive(0);
-        handled = true;
-        break;
-        
-      case 'End':
-        e.preventDefault();
-        setActive(buttons.length - 1);
-        handled = true;
-        break;
-    }
-    
-    if (handled) {
-      // Stop blinking cursor on interaction
-      document.querySelector('.cursor').style.animation = 'none';
-      document.querySelector('.cursor').style.opacity = '1';
-    }
-  });
-  
-  // Mnemonic key shortcuts (Alt + letter)
-  document.addEventListener('keydown', (e) => {
-    if (!e.altKey) return;
-    
-    const key = e.key.toLowerCase();
-    const mnemonicMap = {
-      'i': 'impact',
-      'b': 'build',
-      'c': 'current',
-      'e': 'exp',
-      'o': 'oss',
-      's': 'skills',
-      't': 'think',
-      '@': 'contact'
-    };
-    
-    const target = mnemonicMap[key];
-    if (target) {
-      e.preventDefault();
-      const btnIndex = buttons.findIndex(btn => btn.dataset.target === target);
-      if (btnIndex !== -1) {
-        setActive(btnIndex);
-        // Stop blinking cursor
-        document.querySelector('.cursor').style.animation = 'none';
-        document.querySelector('.cursor').style.opacity = '1';
-      }
-    }
-  });
-  
-  // Direct letter keys (when not in a text field)
-  document.addEventListener('keydown', (e) => {
-    // Only single letters, no modifiers
-    if (e.ctrlKey || e.altKey || e.metaKey) return;
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.key.length !== 1) return;
-    
-    const key = e.key.toLowerCase();
-    const mnemonicMap = {
-      'i': 'impact',
-      'b': 'build',
-      'c': 'current',
-      'e': 'exp',
-      'o': 'oss',
-      's': 'skills',
-      't': 'think',
-      '@': 'contact'
-    };
-    
-    const target = mnemonicMap[key];
-    if (target) {
-      e.preventDefault();
-      const btnIndex = buttons.findIndex(btn => btn.dataset.target === target);
-      if (btnIndex !== -1) {
-        setActive(btnIndex);
-        // Stop blinking cursor
-        document.querySelector('.cursor').style.animation = 'none';
-        document.querySelector('.cursor').style.opacity = '1';
-      }
-    }
-  });
-  
-  // Clock update
-  function updateClock() {
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('en-US', { 
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    });
-    const clockEl = document.getElementById('clock');
-    if (clockEl) {
-      clockEl.textContent = timeStr;
-    }
-  }
-  
-  updateClock();
-  setInterval(updateClock, 1000);
-  
-  // Initialize: show Impact section (index 0)
-  setActive(0);
-})();
-</script>
-
 </body>
 </html>
