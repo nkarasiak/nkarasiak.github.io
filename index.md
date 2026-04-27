@@ -1,2 +1,5 @@
-<link rel="stylesheet" href="/cv/assets/style.css">
+---
+layout: cv
+---
+
 {% include_relative README.md %}

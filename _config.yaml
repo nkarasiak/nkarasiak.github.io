@@ -1,5 +1,6 @@
 title: Nicolas Karasiak
 description: Staff Data Engineer — Geospatial & ML Platforms
+baseurl: /cv
 
 # Keep rendering identical to GitHub
 markdown: kramdown
