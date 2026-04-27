@@ -1,76 +1,81 @@
+```   
+███  ██ ██ ▄█████ ▄████▄ ██     ▄████▄ ▄█████        
+██ ▀▄██ ██ ██     ██  ██ ██     ██▄▄██ ▀▀▀▄▄▄        
+██   ██ ██ ▀█████ ▀████▀ ██████ ██  ██ █████▀                                                       
+██ ▄█▀ ▄████▄ █████▄  ▄████▄ ▄█████ ██ ▄████▄ ██ ▄█▀ 
+████   ██▄▄██ ██▄▄██▄ ██▄▄██ ▀▀▀▄▄▄ ██ ██▄▄██ ████   
+██ ▀█▄ ██  ██ ██   ██ ██  ██ █████▀ ██ ██  ██ ██ ▀█▄ 
+```
+
 # NICOLAS KARASIAK
 
-**Staff Data Engineer, Geospatial & ML Platforms**
+**Staff Data & ML Engineer · Geospatial Platforms**
 
-## WHO I AM
+8+ years building scalable geospatial data & ML platforms.
+Open-source author, 600+ citations on OOS, and 300+ for papers.
 
-Builds high-performance geospatial & ML systems at national scale.<br>
-Removes bottlenecks. Ships faster pipelines. Cuts costs aggressively.
+## EXPERIENCE
 
-## IMPACT (READ THIS FIRST)
+**EarthDaily — Data Scientist / Data Engineer**
+*Toulouse · September 2022 – Present*
 
-* **20M+ parcels** processed per year (full-country scale, 5-day revisit)
-* Terabytes → Raw Sentinel-2 to ML-ready datasets in **~15 minutes**
-* **~100x cost reduction** on production workloads
-* Systems designed for reliability, not hope
+* Led design and scaling of a geospatial data platform (STAC, datacube, Dask) processing **20M+ agricultural parcels** on a 5-day refresh — standardized pipelines from raw satellite data to ML-ready datasets, **\~100× cost reduction**
 
-## WHAT I BUILD
+* Drove perf and cost optimization of large-scale distributed workloads on AWS (EC2, Argo); led ARM64 (Graviton) migration → **\~40% compute cost cut** on targeted workloads
 
-* Distributed geospatial platforms (STAC, Xarray, datacube, Dask, GDAL)
-* Production ML pipelines (time-series, remote sensing)
-* High-performance data tooling (Python + Rust)
-* Developer-first APIs & SDKs
+* Contributed to core open-source geospatial libraries — performance bottlenecks and reliability of STAC-based workflows in production
 
-## CURRENT
+* Built an AI-powered internal developer tool to enforce engineering standards, automate workflows, improve productivity across teams
 
-**EarthDaily, Data Scientist / Data Engineer (2022–present)**
+**Pixstart — Remote Sensing Data Scientist / ML Engineer**
+*Toulouse · September 2020 – September 2022*
 
-* Built core geospatial platform (STAC, Xarray, datacube, Dask, GDAL)
-* Author of **EarthDaily Python SDK (official client)**
-* Designed and developped EarthArray (high-performance internal library)
-* Designed and developped Unicrop (smart interoperability between any groudtruth providers)
-* Optimized AWS infra (EC2, Argo, ARM64)
-* Rewrote critical paths in Rust
+* Built change detection workflows combining satellite imagery and ML
 
-## BEFORE
+* Developed geospatial pipelines combining ML models with domain-specific rules → analysis-ready outputs
 
-**Pixstart, Remote Sensing / ML Engineer (2020–2022)**
+* Translated client requirements into scalable geospatial solutions
 
-* Satellite change detection pipelines
-* Scalable geospatial processing workflows
+**Dynafor / INRA — PhD, Remote Sensing Time Series**
+*Toulouse · October 2016 – August 2019*
 
+* Forest species mapping with satellite time series (Sentinel-2, Formosat-2) — novel approaches combining phenology and canopy structure
 
-**INRA Dynafor, PhD (2016–2019)**
+* Investigated spatial autocorrelation effects on model evaluation, improving robustness of performance metrics
 
-* Forest mapping using time-series (Formosat-2, Sentinel-2)
-* Spatial ML evaluation improvements
+* Published peer-reviewed research; delivered operational geospatial applications
 
-## OPEN SOURCE (PROOF)
+* Built and maintained open-source Python libraries (Museo ToolBox, Museo Pheno) for reproducible geospatial workflows
 
-* EarthDaily Python SDK → official client
-* QuantizedGeoParquet → ~70% smaller than GeoParquet
-* QGIS Dzetsaka → 200k+ downloads, 600+ citations
-* QGIS MCP → 50+ GitHub stars in first month
+**Guiana Amazonian Park — Remote Sensing Intern**
+*Cayenne · March 2016 – September 2016*
+
+* Built open-source processing pipelines using Python, R, QGIS, and OTB
+
+## PROJECTS & OPEN SOURCE
+
+* **EarthDaily Python SDK** — official package; sole designer/maintainer for 1+ year
+
+* **QuantizedGeoParquet (QGP)** — \~70% lighter than GeoParquet via optimized geometry quantization
+
+* **QGIS Dzetsaka Plugin** — 200k+ downloads, 600+ scientific publications
+
+* **QGIS MCP Plugin** — 50+ GitHub stars in the first month of release
 
 ## SKILLS
 
-**Languages** → Python, Rust<br>
-**Systems** → Distributed pipelines (Dask), data platforms, API/SDK design<br>
-**Geo** → Xarray, STAC, GeoParquet, GDAL, rasterio, rioxarray<br>
-**ML** → scikit-learn, time-series<br>
-**Infra** → AWS (EC2, S3), Docker, ARM64<br>
-
-## HOW I THINK
-
-* Performance is a feature
-* Latency budget is real
-* I/O bound until proven otherwise
-* Every bottleneck has a solution
-* Otherwise: build one
+**Languages** → Python, Rust
+**Distributed** → Dask, large-scale data pipelines
+**Geospatial** → STAC, GeoParquet, GDAL
+**ML** → scikit-learn, PyTorch, Lightning, time-series, geospatial ML
+**Platform / API** → Data platform & API/SDK design
+**Performance** → ARM64, profiling, cost optimization
+**Infra** → AWS (EC2, EKS, S3), Docker, Argo
+**Other** → System design, technical lead
 
 ## CONTACT
 
-[karasiak.nicolas@gmail.com](mailto:karasiak.nicolas@gmail.com)<br>
+<karasiak.nicolas@gmail.com>
+[+33 6 01 76 77 08](tel:+33601767708)
 [github.com/nkarasiak](https://github.com/nkarasiak)
-
-*If you read this far, we’ll probably get along.*
+[Google Scholar](https://scholar.google.com/citations?user=71cgDAoAAAAJ)

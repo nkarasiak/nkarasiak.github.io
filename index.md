@@ -1,5 +1,4 @@
 ---
 layout: cv
 ---
-
-{% include_relative README.md %}
+<pre class="raw-md">{% capture md %}{% include_relative README.md %}{% endcapture %}{{ md | escape }}</pre>

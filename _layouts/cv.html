@@ -5,966 +5,469 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ site.title }}</title>
 <style>
-/* ═══════════════════════════════════════════════════════════════
-   TUI/DOS-STYLE CV LAYOUT
-   ═══════════════════════════════════════════════════════════════ */
-
 :root {
-  --bg: #0c0c0c;
-  --bg-panel: #141414;
-  --fg: #cccccc;
-  --fg-dim: #777777;
-  --fg-inactive: #555555;
-  --accent: #ffb000;        /* Amber */
-  --accent-bright: #ffcc00;
-  --border: #444444;
-  --border-dim: #333333;
-  --selection-bg: #ffb000;
-  --selection-fg: #0c0c0c;
+  --bg: #0d1117;
+  --fg: #c9d1d9;
+  --dim: #6e7681;
+
+  --c-h1: #e6edf3;
+  --c-h2: #bdc4cc;
+  --c-h3: #9ca3af;
+  --c-bold: #ffffff;
+  --c-italic: #8b949e;
+  --c-code: #b0b8c0;
+  --c-link: #a0a8b0;
+  --c-tag: #6e7681;
+  --c-bullet: #9096a0;
+  --c-quote: #9ca3af;
+  --c-banner: #c0c6ce;
+  --c-prompt: #d0d7de;
+  --c-rule: #30363d;
 }
 
-* {
-  box-sizing: border-box;
+* { box-sizing: border-box; }
+
+html, body {
   margin: 0;
   padding: 0;
-}
-
-html {
   background: var(--bg);
   color: var(--fg);
-  font-family: ui-monospace, Consolas, "Courier New", monospace;
-  font-size: 15px;
-  line-height: 1.6;
-  height: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 body {
-  min-height: 100vh;
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Terminal container - full height with prompt at bottom */
+.terminal {
   display: flex;
   flex-direction: column;
-  padding: 0.75em;
+  height: 100vh;
 }
 
-/* Scanline overlay */
-body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.03),
-    rgba(0, 0, 0, 0.03) 1px,
-    transparent 1px,
-    transparent 2px
-  );
-  pointer-events: none;
-  z-index: 1000;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   MAIN FRAME (Double-line border style)
-   ═══════════════════════════════════════════════════════════════ */
-
-.tui-frame {
-  border: 2px solid var(--border);
-  background: var(--bg-panel);
+.terminal-scroll {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-}
-
-.tui-frame::before,
-.tui-frame::after {
-  content: "┌┐";
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  font-size: 12px;
-  line-height: 1;
-  color: var(--border);
-  display: flex;
-  justify-content: space-between;
-  padding: 0 4px;
-  pointer-events: none;
-}
-
-.tui-frame::after {
-  content: "└┘";
-  top: auto;
-  bottom: -2px;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   TITLE BAR
-   ═══════════════════════════════════════════════════════════════ */
-
-.title-bar {
-  border-bottom: 1px solid var(--border);
-  padding: 0.5em 0.75em;
-  background: var(--bg);
-  display: flex;
-  align-items: center;
-  gap: 0.75em;
-}
-
-.title-icon {
-  color: var(--accent);
-  font-weight: bold;
-}
-
-.title-text {
-  font-weight: bold;
-}
-
-.title-divider {
-  color: var(--fg-inactive);
-}
-
-.title-subtitle {
-  color: var(--fg-dim);
-}
-
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 1.2em;
-  background: var(--accent);
-  margin-left: 0.25em;
-  animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
-}
-
-@keyframes blink {
-  50% { opacity: 0; }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   CONTENT AREA
-   ═══════════════════════════════════════════════════════════════ */
-
-.content-area {
-  flex: 1;
-  padding: 0.75em;
   overflow-y: auto;
+  padding: 2rem max(1.25rem, calc(50% - 460px)) 1rem;
 }
 
-/* Section panel (single-line border) */
-.section-panel {
-  border: 1px solid var(--border);
+pre.raw-md {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  tab-size: 2;
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  opacity: 0;
+}
+
+pre.raw-md.loaded {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+pre.raw-md .h1     { color: var(--c-h1); font-weight: bold; }
+pre.raw-md .h2     { color: var(--c-h2); font-weight: bold; }
+pre.raw-md .h3     { color: var(--c-h3); font-weight: bold; }
+pre.raw-md .b      { color: var(--c-bold); font-weight: bold; }
+pre.raw-md .i      { color: var(--c-italic); font-style: italic; }
+pre.raw-md .code   { color: var(--c-code); }
+pre.raw-md .link   { color: var(--c-link); }
+pre.raw-md .tag    { color: var(--c-tag); }
+pre.raw-md .bullet { color: var(--c-bullet); font-weight: bold; }
+pre.raw-md .quote  { color: var(--c-quote); font-style: italic; }
+pre.raw-md .banner { color: var(--c-banner); }
+pre.raw-md .prompt { color: var(--c-prompt); font-weight: bold; }
+pre.raw-md .rule   { color: var(--c-rule); }
+
+/* Command output area */
+.cmd-output {
+  margin: 1rem 0;
+  padding: 0;
+}
+
+.cmd-entry {
+  margin: 0.5rem 0;
+}
+
+.cmd-line {
+  color: var(--c-italic);
+}
+
+.cmd-line .cmd-prompt-user { color: var(--c-h1); }
+.cmd-line .cmd-prompt-host { color: var(--c-bold); }
+.cmd-line .cmd-prompt-path { color: var(--c-code); }
+
+.cmd-response {
+  color: var(--c-fg);
+  margin: 0.25rem 0 0 2ch;
+  white-space: pre-wrap;
+}
+
+/* Prompt bar at bottom */
+.prompt-bar {
+  flex-shrink: 0;
   background: var(--bg);
-  height: 100%;
-}
-
-.section-header {
-  border-bottom: 1px solid var(--border);
-  padding: 0.4em 0.75em;
-  background: var(--bg-panel);
+  border-top: 1px solid var(--c-rule);
+  padding: 0.75rem max(1.25rem, calc(50% - 460px));
   display: flex;
   align-items: center;
-  gap: 0.5em;
+  gap: 0.5rem;
 }
 
-.section-title {
-  font-weight: bold;
-  color: var(--accent);
+.prompt-text {
+  white-space: nowrap;
 }
 
-.section-content {
-  padding: 1em 0.75em;
-}
+.prompt-user { color: var(--c-h1); }
+.prompt-host { color: var(--c-bold); }
+.prompt-path { color: var(--c-code); }
 
-/* ═══════════════════════════════════════════════════════════════
-   CONTENT STYLING
-   ═══════════════════════════════════════════════════════════════ */
-
-.section-intro {
-  color: var(--fg-dim);
-  margin-bottom: 1em;
-  font-style: italic;
-}
-
-.section-content ul {
-  list-style: none;
+.prompt-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fg);
+  font: inherit;
+  font-size: inherit;
+  line-height: inherit;
   padding: 0;
   margin: 0;
 }
 
-.section-content li {
-  padding: 0.35em 0;
-  padding-left: 1.25em;
-  position: relative;
+.prompt-input::placeholder {
+  color: var(--c-dim);
 }
 
-.section-content li::before {
-  content: "►";
-  position: absolute;
-  left: 0;
-  color: var(--fg-inactive);
-  font-size: 0.8em;
-  top: 0.45em;
+/* Blinking cursor */
+.cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  background: var(--c-prompt);
+  animation: blink 1s step-end infinite;
+  vertical-align: text-bottom;
+  margin-left: 1px;
 }
 
-.section-content p {
-  margin-bottom: 0.75em;
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
-.highlight {
-  color: var(--accent);
-  font-weight: bold;
-}
+::selection { background: var(--c-link); color: var(--bg); }
 
-.highlight-bright {
-  color: var(--accent-bright);
-  font-weight: bold;
-}
-
-.dim {
-  color: var(--fg-dim);
-}
-
-.code-inline {
-  color: var(--fg-dim);
-  font-size: 0.95em;
-}
-
-.job-title {
-  margin-top: 1em;
-  margin-bottom: 0.5em;
-}
-
-.job-title:first-child {
-  margin-top: 0;
-}
-
-.company {
-  font-weight: bold;
-}
-
-.dates {
-  color: var(--fg-dim);
-  font-size: 0.9em;
-}
-
-/* Skills grid */
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 0.75em;
-}
-
-.skill-row {
-  display: flex;
-  gap: 0.75em;
-  flex-wrap: wrap;
-}
-
-.skill-category {
-  color: var(--fg);
-  font-weight: bold;
-  min-width: 100px;
-}
-
-.skill-items {
-  color: var(--fg-dim);
-}
-
-/* Philosophy section */
-.philosophy-list {
-  font-style: italic;
-}
-
-.philosophy-list li {
-  padding-left: 1.5em;
-}
-
-.philosophy-list li::before {
-  content: "→";
-  color: var(--accent);
-  font-style: normal;
-}
-
-/* Contact links */
-.contact-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75em;
-}
-
-.contact-link {
-  color: var(--accent);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  gap: 0.5em;
-  padding: 0.5em 0;
-}
-
-.contact-link::before {
-  content: "→";
-  color: var(--fg-inactive);
-}
-
-.contact-link:hover,
-.contact-link:focus {
-  text-decoration: underline;
-}
-
-.closing-note {
-  margin-top: 1.5em;
-  color: var(--fg-dim);
-  font-style: italic;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   BUTTON BAR
-   ═══════════════════════════════════════════════════════════════ */
-
-.button-bar {
-  border-top: 1px solid var(--border);
-  padding: 0.5em 0.75em;
-  background: var(--bg);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25em 0.75em;
-  justify-content: center;
-}
-
-.tui-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.1em;
-  padding: 0.15em 0.4em;
-  border: 1px solid transparent;
-  background: transparent;
-  color: var(--fg);
-  font-family: inherit;
-  font-size: inherit;
-  cursor: pointer;
-  text-decoration: none;
-  line-height: 1.4;
-  transition: none;
-}
-
-.tui-btn:hover {
-  border-color: var(--border);
-}
-
-.tui-btn:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.tui-btn.active {
-  background: var(--accent);
-  color: var(--selection-fg);
-  border-color: var(--accent);
-}
-
-.tui-btn.active:hover {
-  background: var(--accent-bright);
-  border-color: var(--accent-bright);
-}
-
-.tui-btn kbd {
-  color: var(--accent);
-  font-family: inherit;
-  text-decoration: underline;
-}
-
-.tui-btn.active kbd {
-  color: var(--selection-fg);
-  text-decoration: underline;
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   STATUS BAR
-   ═══════════════════════════════════════════════════════════════ */
-
-.status-bar {
-  border-top: 1px solid var(--border);
-  padding: 0.35em 0.75em;
-  background: var(--bg);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.85em;
-  color: var(--fg-dim);
-}
-
-.status-hints {
-  display: flex;
-  gap: 1.5em;
-}
-
-.status-hint {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3em;
-}
-
-.status-hint kbd {
-  color: var(--accent);
-  font-family: inherit;
-}
-
-.clock {
-  font-variant-numeric: tabular-nums;
-  color: var(--accent);
-}
-
-/* Touch device: hide keyboard hints */
-@media (hover: none) and (pointer: coarse) {
-  .status-hints {
-    display: none;
-  }
-  .status-bar {
-    justify-content: center;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   RESPONSIVE
-   ═══════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #21262d; }
+::-webkit-scrollbar-thumb:hover { background: #30363d; }
 
 @media (max-width: 600px) {
-  html {
-    font-size: 14px;
-  }
-  
-  body {
-    padding: 0.5em;
-  }
-  
-  .content-area {
-    padding: 0.5em;
-  }
-  
-  .section-content {
-    padding: 0.75em 0.5em;
-  }
-  
-  .button-bar {
-    gap: 0.2em 0.5em;
-    padding: 0.4em 0.5em;
-  }
-  
-  .skills-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .status-hints {
-    gap: 0.75em;
-    font-size: 0.9em;
-  }
+  body { font-size: 13px; }
+  .terminal-scroll { padding: 1.25rem 1rem 1rem; }
 }
-
-@media (max-width: 400px) {
-  html {
-    font-size: 13px;
-  }
-  
-  .title-bar {
-    flex-wrap: wrap;
-    gap: 0.3em;
-  }
-  
-  .button-bar {
-    justify-content: flex-start;
-  }
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   PRINT
-   ═══════════════════════════════════════════════════════════════ */
 
 @media print {
-  body::before {
-    display: none;
-  }
-  
-  .tui-frame {
-    border-color: #000;
-    background: #fff;
-  }
-  
-  .title-bar,
-  .button-bar,
-  .status-bar {
-    display: none;
-  }
-  
-  html,
-  body {
+  @page { size: A4 portrait; margin: 1cm; }
+  html, body {
     background: #fff;
     color: #000;
+    height: auto;
+    overflow: visible;
   }
-  
-  .section-panel {
-    border-color: #000;
-    background: #fff;
-  }
-  
-  .section-header {
-    border-color: #000;
-    background: #fff;
-  }
-  
-  .section-title {
-    color: #000;
-  }
-  
-  .highlight,
-  .highlight-bright {
-    color: #000;
-  }
-  
-  .cursor {
-    display: none;
-  }
-  
-  body {
-    padding: 1em;
-  }
-  
-  .content-area {
+  body { font-size: 8pt; line-height: 1.25; padding: 0; }
+  .terminal { height: auto; }
+  .terminal-scroll {
+    overflow: visible;
     padding: 0;
   }
-  
-  .section-content {
-    padding: 1em 0;
+  pre.raw-md { 
+    font-size: 8pt; 
+    line-height: 1.25; 
+    opacity: 1;
   }
-}
-
-/* Hide inactive sections */
-.section-panel[data-section] {
-  display: none;
-}
-
-.section-panel[data-section].active {
-  display: block;
-}
-
-/* Scrollbar styling */
-.content-area::-webkit-scrollbar {
-  width: 8px;
-}
-
-.content-area::-webkit-scrollbar-track {
-  background: var(--bg);
-}
-
-.content-area::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 0;
-}
-
-.content-area::-webkit-scrollbar-thumb:hover {
-  background: var(--fg-inactive);
+  pre.raw-md .h1, pre.raw-md .h2, pre.raw-md .h3, pre.raw-md .b { color: #000; }
+  pre.raw-md .i, pre.raw-md .tag, pre.raw-md .bullet,
+  pre.raw-md .code, pre.raw-md .quote { color: #444; }
+  pre.raw-md .link { color: #000; text-decoration: underline; }
+  pre.raw-md .banner { color: #000; }
+  pre.raw-md .prompt { color: #000; }
+  pre.raw-md .rule { color: #999; }
+  .prompt-bar, .cmd-output { display: none; }
 }
 </style>
 </head>
 <body>
-
-<div class="tui-frame">
-  <!-- Title Bar -->
-  <div class="title-bar">
-    <span class="title-icon">>_</span>
-    <span class="title-text">NICOLAS KARASIAK</span>
-    <span class="title-divider">───</span>
-    <span class="title-subtitle">Staff Data Engineer, Geospatial & ML Platforms</span>
-    <span class="cursor"></span>
+<div class="terminal">
+  <div class="terminal-scroll" id="terminal-scroll">
+    {{ content }}
+    <div class="cmd-output" id="cmd-output"></div>
   </div>
-
-  <!-- Content Area -->
-  <div class="content-area">
-    <!-- Impact Section -->
-    <div class="section-panel" data-section="impact">
-      <div class="section-header">
-        <span class="section-title">IMPACT</span>
-      </div>
-      <div class="section-content">
-        <p class="section-intro">Read this first.</p>
-        <ul>
-          <li><span class="highlight-bright">20M+ parcels</span> processed per year (full-country scale, 5-day revisit)</li>
-          <li>Terabytes → Raw Sentinel-2 to ML-ready datasets in <span class="highlight">~15 minutes</span></li>
-          <li><span class="highlight">~100x cost reduction</span> on production workloads</li>
-          <li>Systems designed for reliability, not hope</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Build Section -->
-    <div class="section-panel" data-section="build">
-      <div class="section-header">
-        <span class="section-title">WHAT I BUILD</span>
-      </div>
-      <div class="section-content">
-        <ul>
-          <li>Distributed geospatial platforms <span class="dim">(STAC, Xarray, datacube, Dask, GDAL)</span></li>
-          <li>Production ML pipelines <span class="dim">(time-series, remote sensing)</span></li>
-          <li>High-performance data tooling <span class="dim">(Python + Rust)</span></li>
-          <li>Developer-first APIs & SDKs</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Current Section -->
-    <div class="section-panel" data-section="current">
-      <div class="section-header">
-        <span class="section-title">CURRENT</span>
-      </div>
-      <div class="section-content">
-        <p class="job-title">
-          <span class="company">EarthDaily</span>, Data Scientist / Data Engineer <span class="dates">(2022–present)</span>
-        </p>
-        <ul>
-          <li>Built core geospatial platform <span class="dim">(STAC, Xarray, datacube, Dask, GDAL)</span></li>
-          <li>Author of <span class="highlight">EarthDaily Python SDK</span> (official client)</li>
-          <li>Designed and developed <span class="highlight">EarthArray</span> (high-performance internal library)</li>
-          <li>Designed and developed <span class="highlight">Unicrop</span> (smart interoperability between any groundtruth providers)</li>
-          <li>Optimized AWS infra <span class="dim">(EC2, Argo, ARM64)</span></li>
-          <li>Rewrote critical paths in Rust</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Experience Section -->
-    <div class="section-panel" data-section="exp">
-      <div class="section-header">
-        <span class="section-title">BEFORE</span>
-      </div>
-      <div class="section-content">
-        <p class="job-title">
-          <span class="company">Pixstart</span>, Remote Sensing / ML Engineer <span class="dates">(2020–2022)</span>
-        </p>
-        <ul>
-          <li>Satellite change detection pipelines</li>
-          <li>Scalable geospatial processing workflows</li>
-        </ul>
-        
-        <p class="job-title">
-          <span class="company">INRA Dynafor</span>, PhD <span class="dates">(2016–2019)</span>
-        </p>
-        <ul>
-          <li>Forest mapping using time-series <span class="dim">(Formosat-2, Sentinel-2)</span></li>
-          <li>Spatial ML evaluation improvements</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Open Source Section -->
-    <div class="section-panel" data-section="oss">
-      <div class="section-header">
-        <span class="section-title">OPEN SOURCE</span>
-      </div>
-      <div class="section-content">
-        <p class="section-intro">Proof of work.</p>
-        <ul>
-          <li><span class="highlight">EarthDaily Python SDK</span> → official client</li>
-          <li><span class="highlight">QuantizedGeoParquet</span> → ~70% smaller than GeoParquet</li>
-          <li><span class="highlight">QGIS Dzetsaka</span> → 200k+ downloads, 600+ citations</li>
-          <li><span class="highlight">QGIS MCP</span> → 50+ GitHub stars in first month</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Skills Section -->
-    <div class="section-panel" data-section="skills">
-      <div class="section-header">
-        <span class="section-title">SKILLS</span>
-      </div>
-      <div class="section-content">
-        <div class="skills-grid">
-          <div class="skill-row">
-            <span class="skill-category">Languages</span>
-            <span class="skill-items">Python, Rust</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">Systems</span>
-            <span class="skill-items">Distributed pipelines (Dask), data platforms, API/SDK design</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">Geo</span>
-            <span class="skill-items">Xarray, STAC, GeoParquet, GDAL, rasterio, rioxarray</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">ML</span>
-            <span class="skill-items">scikit-learn, time-series</span>
-          </div>
-          <div class="skill-row">
-            <span class="skill-category">Infra</span>
-            <span class="skill-items">AWS (EC2, S3), Docker, ARM64</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Think Section -->
-    <div class="section-panel" data-section="think">
-      <div class="section-header">
-        <span class="section-title">HOW I THINK</span>
-      </div>
-      <div class="section-content">
-        <ul class="philosophy-list">
-          <li>Performance is a feature</li>
-          <li>Latency budget is real</li>
-          <li>I/O bound until proven otherwise</li>
-          <li>Every bottleneck has a solution</li>
-          <li>Otherwise: build one</li>
-        </ul>
-      </div>
-    </div>
-
-    <!-- Contact Section -->
-    <div class="section-panel" data-section="contact">
-      <div class="section-header">
-        <span class="section-title">CONTACT</span>
-      </div>
-      <div class="section-content">
-        <div class="contact-links">
-          <a href="mailto:karasiak.nicolas@gmail.com" class="contact-link">karasiak.nicolas@gmail.com</a>
-          <a href="https://github.com/nkarasiak" class="contact-link">github.com/nkarasiak</a>
-        </div>
-        <p class="closing-note">If you read this far, we'll probably get along.</p>
-      </div>
-    </div>
-  </div>
-
-  <!-- Button Bar -->
-  <div class="button-bar" role="tablist" aria-label="CV Sections">
-    <button class="tui-btn active" data-target="impact" role="tab" aria-selected="true" tabindex="0">
-      <kbd>I</kbd>mpact
-    </button>
-    <button class="tui-btn" data-target="build" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>B</kbd>uild
-    </button>
-    <button class="tui-btn" data-target="current" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>C</kbd>urrent
-    </button>
-    <button class="tui-btn" data-target="exp" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>E</kbd>xp
-    </button>
-    <button class="tui-btn" data-target="oss" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>O</kbd>ss
-    </button>
-    <button class="tui-btn" data-target="skills" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>S</kbd>kills
-    </button>
-    <button class="tui-btn" data-target="think" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>T</kbd>hink
-    </button>
-    <button class="tui-btn" data-target="contact" role="tab" aria-selected="false" tabindex="-1">
-      <kbd>@</kbd>Contact
-    </button>
-  </div>
-
-  <!-- Status Bar -->
-  <div class="status-bar">
-    <div class="status-hints">
-      <span class="status-hint"><kbd>Alt</kbd>+Letter Jump</span>
-      <span class="status-hint"><kbd>Tab</kbd> Next</span>
-      <span class="status-hint"><kbd>↑↓</kbd> Navigate</span>
-    </div>
-    <span class="clock" id="clock">--:--:--</span>
+  <div class="prompt-bar">
+    <span class="prompt-text"><span class="prompt-user">visitor</span>@<span class="prompt-host">cv</span>:<span class="prompt-path">~</span>$</span>
+    <input type="text" class="prompt-input" id="prompt-input" autocomplete="off" spellcheck="false" placeholder="type 'help' for commands">
+    <span class="cursor" id="cursor"></span>
   </div>
 </div>
 
 <script>
-/* ═══════════════════════════════════════════════════════════════
-   TUI/DOS NAVIGATION LOGIC
-   ═══════════════════════════════════════════════════════════════ */
-
 (function() {
   'use strict';
-  
-  const buttons = Array.from(document.querySelectorAll('.tui-btn'));
-  const sections = Array.from(document.querySelectorAll('.section-panel[data-section]'));
-  const sectionMap = new Map();
-  
-  // Map buttons to sections
-  buttons.forEach(btn => {
-    const target = btn.dataset.target;
-    const section = document.querySelector(`.section-panel[data-section="${target}"]`);
-    if (section) {
-      sectionMap.set(btn, section);
-    }
-  });
-  
-  let activeIndex = 0;
-  
-  function setActive(index) {
-    if (index < 0) index = buttons.length - 1;
-    if (index >= buttons.length) index = 0;
-    
-    // Update buttons
-    buttons.forEach((btn, i) => {
-      const isActive = i === index;
-      btn.classList.toggle('active', isActive);
-      btn.setAttribute('aria-selected', isActive);
-      btn.setAttribute('tabindex', isActive ? '0' : '-1');
-    });
-    
-    // Update sections
-    sections.forEach((section, i) => {
-      const btn = buttons[i];
-      const isActive = i === index;
-      section.classList.toggle('active', isActive);
-      if (isActive) {
-        section.scrollTop = 0;
-      }
-    });
-    
-    activeIndex = index;
-    
-    // Focus the active button
-    buttons[activeIndex].focus();
+
+  const pre = document.querySelector('pre.raw-md');
+  if (!pre) return;
+
+  const raw = pre.textContent;
+  const terminalScroll = document.getElementById('terminal-scroll');
+  const cmdOutput = document.getElementById('cmd-output');
+  const promptInput = document.getElementById('prompt-input');
+  const cursor = document.getElementById('cursor');
+
+  let navTarget = null;
+  let cmdHistory = [];
+  let historyIndex = -1;
+
+  function esc(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
-  
-  // Click handlers
-  buttons.forEach((btn, index) => {
-    btn.addEventListener('click', () => setActive(index));
-  });
-  
-  // Keyboard navigation
-  document.addEventListener('keydown', (e) => {
-    // Ignore if typing in an input
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    
-    let handled = false;
-    
-    switch (e.key) {
-      case 'Tab':
-        e.preventDefault();
-        if (e.shiftKey) {
-          setActive(activeIndex - 1);
+
+  function highlightInline(line) {
+    let s = esc(line);
+
+    // ASCII art in code blocks
+    if (/^[\s█░▒▓▄▀▐▌▖▗▘▝▙▛▜▟▞▚╔╗╚╝║═╠╣╦╩╬┌┐└┘│─]*$/.test(line)) {
+      if (/[█░▒▓▄▀▐▌▖▗▘▝▙▛▜▟▞▚╔╗╚╝║═╠╣╦╩╬┌┐└┘│─]/.test(line)) {
+        return '<span class="banner">' + s + '</span>';
+      }
+    }
+
+    // Headers
+    let m;
+    if (m = line.match(/^(#{1,3}) (.*)$/)) {
+      const level = m[1].length;
+      return '<span class="h' + level + '">' + s + '</span>';
+    }
+
+    // Blockquote
+    if (/^&gt; /.test(s)) {
+      return '<span class="quote">' + s + '</span>';
+    }
+
+    // Inline tokens
+    s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<span class="link">[$1]($2)</span>');
+    s = s.replace(/\*\*([^*\n]+)\*\*/g, '<span class="b">**$1**</span>');
+    s = s.replace(/^\* /, '<span class="bullet">*</span> ');
+
+    s = s.split(/(<span [^>]+>[\s\S]*?<\/span>)/g).map(part => {
+      if (part.startsWith('<span ')) return part;
+      return part.replace(/(^|[^*\w])\*([^*\n]+)\*(?!\*)/g, '$1<span class="i">*$2*</span>');
+    }).join('');
+
+    s = s.split(/(<span [^>]+>[\s\S]*?<\/span>)/g).map(part => {
+      if (part.startsWith('<span ')) return part;
+      return part.replace(/`([^`\n]+)`/g, '<span class="code">`$1`</span>');
+    }).join('');
+
+    s = s.split(/(<span [^>]+>[\s\S]*?<\/span>)/g).map(part => {
+      if (part.startsWith('<span ')) return part;
+      return part.replace(/&lt;\/?[a-zA-Z][^&]*&gt;/g, m => '<span class="tag">' + m + '</span>');
+    }).join('');
+
+    return s;
+  }
+
+  // Render content with syntax highlighting
+  function renderContent() {
+    const lines = raw.split('\n');
+    const highlighted = lines.map(highlightInline).join('\n');
+    pre.innerHTML = highlighted;
+    pre.classList.add('loaded');
+  }
+
+  // Type text with cursor
+  function typeText(element, text, delay = 15) {
+    return new Promise(resolve => {
+      let i = 0;
+      cursor.style.opacity = '1';
+      
+      function typeChar() {
+        if (i < text.length) {
+          element.textContent += text[i];
+          i++;
+          terminalScroll.scrollTop = terminalScroll.scrollHeight;
+          setTimeout(typeChar, delay);
         } else {
-          setActive(activeIndex + 1);
+          resolve();
         }
-        handled = true;
-        break;
-        
-      case 'ArrowRight':
-      case 'ArrowDown':
-        e.preventDefault();
-        setActive(activeIndex + 1);
-        handled = true;
-        break;
-        
-      case 'ArrowLeft':
-      case 'ArrowUp':
-        e.preventDefault();
-        setActive(activeIndex - 1);
-        handled = true;
-        break;
-        
-      case 'Home':
-        e.preventDefault();
-        setActive(0);
-        handled = true;
-        break;
-        
-      case 'End':
-        e.preventDefault();
-        setActive(buttons.length - 1);
-        handled = true;
-        break;
-    }
-    
-    if (handled) {
-      // Stop blinking cursor on interaction
-      document.querySelector('.cursor').style.animation = 'none';
-      document.querySelector('.cursor').style.opacity = '1';
-    }
-  });
-  
-  // Mnemonic key shortcuts (Alt + letter)
-  document.addEventListener('keydown', (e) => {
-    if (!e.altKey) return;
-    
-    const key = e.key.toLowerCase();
-    const mnemonicMap = {
-      'i': 'impact',
-      'b': 'build',
-      'c': 'current',
-      'e': 'exp',
-      'o': 'oss',
-      's': 'skills',
-      't': 'think',
-      '@': 'contact'
-    };
-    
-    const target = mnemonicMap[key];
-    if (target) {
-      e.preventDefault();
-      const btnIndex = buttons.findIndex(btn => btn.dataset.target === target);
-      if (btnIndex !== -1) {
-        setActive(btnIndex);
-        // Stop blinking cursor
-        document.querySelector('.cursor').style.animation = 'none';
-        document.querySelector('.cursor').style.opacity = '1';
       }
-    }
-  });
-  
-  // Direct letter keys (when not in a text field)
-  document.addEventListener('keydown', (e) => {
-    // Only single letters, no modifiers
-    if (e.ctrlKey || e.altKey || e.metaKey) return;
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.key.length !== 1) return;
-    
-    const key = e.key.toLowerCase();
-    const mnemonicMap = {
-      'i': 'impact',
-      'b': 'build',
-      'c': 'current',
-      'e': 'exp',
-      'o': 'oss',
-      's': 'skills',
-      't': 'think',
-      '@': 'contact'
-    };
-    
-    const target = mnemonicMap[key];
-    if (target) {
-      e.preventDefault();
-      const btnIndex = buttons.findIndex(btn => btn.dataset.target === target);
-      if (btnIndex !== -1) {
-        setActive(btnIndex);
-        // Stop blinking cursor
-        document.querySelector('.cursor').style.animation = 'none';
-        document.querySelector('.cursor').style.opacity = '1';
-      }
-    }
-  });
-  
-  // Clock update
-  function updateClock() {
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString('en-US', { 
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+      typeChar();
     });
-    const clockEl = document.getElementById('clock');
-    if (clockEl) {
-      clockEl.textContent = timeStr;
+  }
+
+  // Command handlers
+  const commands = {
+    help: () => `Available commands:
+  about      - Show introduction
+  skills     - Jump to skills section
+  experience - Jump to experience section  
+  projects   - Jump to projects section
+  contact    - Show contact information
+  date       - Current date/time
+  whoami     - Current user
+  clear      - Clear command history
+
+Pro tip: Try 'sudo hire me'`,
+
+    about: () => `Nicolas Karasiak - Staff Data & ML Engineer
+
+8+ years building scalable geospatial data & ML platforms.
+Open-source author with 600+ citations on OSS and 300+ for papers.
+Based in Toulouse, open to remote work.`,
+
+    skills: () => {
+      scrollToSection('## SKILLS');
+      return 'Jumping to Skills section...';
+    },
+
+    experience: () => {
+      scrollToSection('## EXPERIENCE');
+      return 'Jumping to Experience section...';
+    },
+
+    projects: () => {
+      scrollToSection('## PROJECTS');
+      return 'Jumping to Projects & Open Source section...';
+    },
+
+    contact: () => `Email:  karasiak.nicolas@gmail.com
+Phone:  +33 6 01 76 77 08
+GitHub: github.com/nkarasiak`,
+
+    date: () => new Date().toString(),
+
+    whoami: () => 'recruiter',
+
+    clear: () => {
+      cmdOutput.innerHTML = '';
+      terminalScroll.scrollTop = 0;
+      return null;
+    },
+
+    'sudo hire me': async () => {
+      await typeText(cmdOutput.lastElementChild?.querySelector('.cmd-response') || cmdOutput, 
+        '\n[sudo] password for recruiter: ********', 30);
+      await new Promise(r => setTimeout(r, 500));
+      return `\n\nProcessing application...\n\n✓ Technical skills validated\n✓ Open source contributions verified\n✓ Cost optimization record confirmed\n\nStatus: APPROVED 🎉\n\nContact: karasiak.nicolas@gmail.com`;
+    }
+  };
+
+  function scrollToSection(headerText) {
+    const sectionName = headerText.replace('## ', '').toLowerCase().trim();
+    const headers = pre.querySelectorAll('.h2');
+    
+    for (const header of headers) {
+      const text = header.textContent.toLowerCase().trim();
+      const isMatch = text.includes(sectionName) || 
+          (sectionName === 'experience' && text.includes('experience')) ||
+          (sectionName === 'projects' && (text.includes('projects') || text.includes('open source'))) ||
+          (sectionName === 'skills' && text.includes('skills'));
+      
+      if (isMatch) {
+        navTarget = header;
+        return true;
+      }
+    }
+    return false;
+  }
+
+  async function executeCommand(input) {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+
+    const lower = trimmed.toLowerCase();
+
+    // Add to history
+    if (cmdHistory.length === 0 || cmdHistory[cmdHistory.length - 1] !== lower) {
+      cmdHistory.push(lower);
+    }
+    historyIndex = cmdHistory.length;
+
+    // Display command
+    const entry = document.createElement('div');
+    entry.className = 'cmd-entry';
+    entry.innerHTML = `<div class="cmd-line"><span class="cmd-prompt-user">visitor</span>@<span class="cmd-prompt-host">cv</span>:<span class="cmd-prompt-path">~</span>$ ${esc(trimmed)}</div>`;
+    cmdOutput.appendChild(entry);
+
+    // Execute
+    let response;
+    if (commands[lower] || (lower.startsWith('sudo ') && commands[lower])) {
+      response = await commands[lower]();
+    } else if (lower.startsWith('sudo ')) {
+      response = `sudo: ${lower.slice(5)}: Permission denied\nTry 'sudo hire me' instead 😉`;
+    } else {
+      response = `${lower.split(' ')[0]}: command not found\nType 'help' for available commands.`;
+    }
+
+    if (response !== null) {
+      const respEl = document.createElement('div');
+      respEl.className = 'cmd-response';
+      entry.appendChild(respEl);
+      await typeText(respEl, response, 8);
+    }
+
+    if (navTarget) {
+      const headerRect = navTarget.getBoundingClientRect();
+      const scrollRect = terminalScroll.getBoundingClientRect();
+      terminalScroll.scrollTop += headerRect.top - scrollRect.top - 20;
+      navTarget = null;
+    } else {
+      terminalScroll.scrollTop = terminalScroll.scrollHeight;
     }
   }
-  
-  updateClock();
-  setInterval(updateClock, 1000);
-  
-  // Initialize: show Impact section (index 0)
-  setActive(0);
+
+  // Event listeners
+  promptInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      executeCommand(promptInput.value);
+      promptInput.value = '';
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIndex > 0) {
+        historyIndex--;
+        promptInput.value = cmdHistory[historyIndex];
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex < cmdHistory.length - 1) {
+        historyIndex++;
+        promptInput.value = cmdHistory[historyIndex];
+      } else {
+        historyIndex = cmdHistory.length;
+        promptInput.value = '';
+      }
+    } else if (e.key === 'l' && e.ctrlKey) {
+      e.preventDefault();
+      commands.clear();
+    }
+  });
+
+  // Keep focus on prompt
+  terminalScroll.addEventListener('click', (e) => {
+    if (e.target.tagName !== 'A') {
+      promptInput.focus();
+    }
+  });
+
+  // Initialize
+  renderContent();
+  promptInput.focus();
 })();
 </script>
-
 </body>
 </html>
