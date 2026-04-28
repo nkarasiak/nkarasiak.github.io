@@ -4,12 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ site.title }}</title>
+<link rel="apple-touch-icon" sizes="180x180" href="{{ '/assets/apple-touch-icon.png' | relative_url }}">
+<link rel="icon" type="image/png" sizes="32x32" href="{{ '/assets/favicon-32x32.png' | relative_url }}">
+<link rel="icon" type="image/png" sizes="16x16" href="{{ '/assets/favicon-16x16.png' | relative_url }}">
 <style>
 :root {
   --bg: #0c0c0c;
   --fg: #888888;
   --fg-bright: #d0d0d0;
-  --fg-dim: #555555;
+  --fg-dim: #757575;
   --accent: #ffffff;
 }
 
@@ -29,7 +32,25 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Scanline overlay */
+body::before {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.06) 2px,
+    rgba(0,0,0,0.06) 4px
+  );
+}
+
+/* Hidden until JS injects DOM markers and starts typewriter */
 .container {
+  visibility: hidden;
   max-width: 680px;
   margin: 0 auto;
   padding: 2.5rem 1.5rem 4rem;
@@ -58,9 +79,10 @@ h1 {
   color: var(--accent);
   font-family: inherit;
   font-size: 1.6rem;
-  font-weight: 700;
+  font-weight: 600;
   line-height: 1.2;
   margin: 0 0 0.6rem;
+  text-shadow: 0 0 18px rgba(255,255,255,0.12);
 }
 
 h2 {
@@ -68,7 +90,39 @@ h2 {
   font-family: inherit;
   font-size: inherit;
   font-weight: 700;
-  margin: 2.5rem 0 1rem;
+  padding-top: 1.5rem;
+  margin: 1rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+/* JS-injected trailing rule for h2 */
+.h2-rule {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  color: #2a2a2a;
+  font-weight: 400;
+}
+
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 2rem;
+  margin: 0 0 1.25rem;
+}
+
+dt {
+  color: var(--fg-dim);
+  font-weight: 500;
+  align-self: baseline;
+}
+
+dd {
+  margin: 0;
+  color: var(--fg);
 }
 
 p {
@@ -77,7 +131,7 @@ p {
 
 strong {
   color: var(--fg-bright);
-  font-weight: 700;
+  font-weight: 500;
 }
 
 em {
@@ -89,10 +143,22 @@ a {
   color: var(--fg-bright);
   text-decoration: none;
   border-bottom: 1px solid var(--fg-dim);
+  cursor: pointer;
 }
 
 a:hover {
   border-bottom-color: var(--fg-bright);
+}
+
+a:focus-visible {
+  outline: 1px solid var(--fg-bright);
+  outline-offset: 3px;
+}
+
+h2:focus-visible {
+  outline: 1px solid var(--fg-dim);
+  outline-offset: 6px;
+  border-radius: 0;
 }
 
 /* Job title + date stacking */
@@ -113,12 +179,88 @@ li {
   margin-bottom: 0.75rem;
 }
 
-li::before {
-  content: '[*]';
+/* JS-injected [*] marker (replaces li::before pseudo-element) */
+.li-marker {
   position: absolute;
   left: 0;
   color: var(--fg-dim);
   font-weight: 400;
+}
+
+/* Typewriter cursor */
+.tui-cursor {
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+  display: inline;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tui-cursor { animation: none; opacity: 1; }
+  body::before { display: none; }
+}
+
+/* Hidden terminal */
+.tui-term {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: 210px;
+  background: #060606;
+  border-top: 1px solid #252525;
+  display: none;
+  flex-direction: column;
+  font-size: 13px;
+  z-index: 10000;
+  padding: 0.6rem 1.5rem 0.5rem;
+}
+.tui-term.open { display: flex; }
+.tui-term-history {
+  flex: 1;
+  overflow-y: auto;
+  color: var(--fg);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.tui-term-history .cmd  { color: var(--fg-bright); }
+.tui-term-history .out  { color: var(--fg); }
+.tui-term-history .err  { color: #888; }
+.tui-term-history .ok   { color: #aaa; }
+.tui-term-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid #1a1a1a;
+  flex-shrink: 0;
+}
+.tui-term-ps1 { color: var(--fg-dim); white-space: nowrap; user-select: none; }
+.tui-term-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fg-bright);
+  font-family: inherit;
+  font-size: inherit;
+  flex: 1;
+  caret-color: var(--accent);
+}
+.tui-term-hint {
+  position: absolute;
+  bottom: 0.35rem; right: 1.5rem;
+  font-size: 0.65rem;
+  color: #2a2a2a;
+  pointer-events: none;
+}
+@media print { .tui-term { display: none !important; } }
+
+.print-header { display: none; }
+
+.copy-toast {
+  color: var(--fg-bright);
 }
 
 ::selection {
@@ -138,25 +280,396 @@ li::before {
 }
 
 @media print {
-  @page { size: A4 portrait; margin: 1.5cm; }
+  @page { size: A4 portrait; margin: 1cm; }
   html, body {
     background: #fff;
     color: #000;
     height: auto;
     overflow: visible;
   }
-  body { font-size: 9pt; line-height: 1.35; }
-  .container { padding: 0; max-width: none; }
-  h1, h2, strong { color: #000; }
+  body { font-size: 8.5pt; line-height: 1.3; }
+  body::before { display: none; }
+  .container { visibility: visible; padding: 0; max-width: none; }
   a { color: #000; border-bottom: 1px solid #999; }
-  pre { color: #666; }
-  li::before { color: #999; }
+  .tui-cursor { display: none; }
+  .h2-rule { display: none; }
+  .li-marker { display: none; }
+
+  /* Drop ASCII art header on print */
+  pre { display: none; }
+
+  /* Hide on-screen role tagline + summary (replaced by .print-header) */
+  .container > p:first-of-type,
+  .container > p:nth-of-type(2) { display: none; }
+
+  /* Two-column print header */
+  .print-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.6rem;
+    align-items: start;
+    margin: 0 0 0.4rem;
+  }
+  .print-header h1 {
+    color: #000;
+    font-size: 17pt;
+    font-weight: 600;
+    margin: 0 0 0.15rem;
+    line-height: 1.15;
+    text-shadow: none;
+  }
+  .print-header .role {
+    font-size: 9.5pt;
+    margin: 0 0 0.15rem;
+  }
+  .print-header .summary {
+    font-size: 8pt;
+    color: #555;
+    margin: 0;
+    line-height: 1.35;
+  }
+  .print-header .contact {
+    text-align: right;
+    font-size: 8pt;
+    line-height: 1.6;
+  }
+  .print-header .contact a {
+    display: block;
+    color: #000;
+    border-bottom: none;
+  }
+
+  /* Section headers: small caps, thin rule under */
+  h2 {
+    display: block;
+    color: #000;
+    font-size: 10pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0.7rem 0 0.25rem;
+    padding-top: 0;
+    padding-bottom: 1pt;
+    border-top: none;
+    border-bottom: 1px solid #a0a0a0;
+    page-break-after: avoid;
+    white-space: normal;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.15rem 1.5rem;
+    margin: 0 0 0.45rem;
+  }
+  dt { color: #555; font-weight: 500; }
+  dd { margin: 0; color: #000; }
+
+  strong { color: #000; font-weight: 600; }
+  em { color: #555; }
+
+  /* Job title + date stack tighter */
+  p:has(em) > strong:first-child { margin-bottom: 0.05rem; }
+  p { margin: 0 0 0.35rem; }
+
+  /* Tight bullets with CSS marker for print */
+  ul { margin: 0 0 0.45rem; }
+  li {
+    padding-left: 1em;
+    margin-bottom: 0.15rem;
+    page-break-inside: avoid;
+  }
+  li::before { content: '•'; color: #888; position: absolute; left: 0; }
+
+  /* Hide bottom CONTACT section (already in print-header) */
+  h2#contact, h2#contact ~ * { display: none; }
+
+  /* Defensive: don't split a section across pages */
+  h2 + p, h2 + ul { page-break-inside: avoid; }
 }
 </style>
 </head>
 <body>
 <div class="container">
+  <header class="print-header">
+    <div>
+      <h1>Nicolas Karasiak</h1>
+      <p class="role"><strong>Staff Data &amp; ML Engineer — Geospatial Platforms</strong></p>
+      <p class="summary">8+ years building scalable geospatial data &amp; ML systems on satellite imagery. Open-source maintainer · 600+ scientific citations across OSS tools · 300+ on peer-reviewed papers.</p>
+    </div>
+    <div class="contact">
+      <a href="mailto:karasiak.nicolas@gmail.com">karasiak.nicolas@gmail.com</a>
+      <a href="tel:+33601767708">+33 6 01 76 77 08</a>
+      <a href="https://github.com/nkarasiak">github.com/nkarasiak</a>
+      <a href="https://scholar.google.com/citations?user=71cgDAoAAAAJ">Google Scholar</a>
+    </div>
+  </header>
   {{ content }}
 </div>
+
+<div class="tui-term" id="tui-term">
+  <div class="tui-term-history" id="tui-hist"></div>
+  <div class="tui-term-row">
+    <span class="tui-term-ps1">nicolas@cv:~$</span>
+    <input class="tui-term-input" id="tui-input" autocomplete="off" spellcheck="false" />
+  </div>
+  <span class="tui-term-hint">Ctrl+K / Esc to close · type help</span>
+</div>
+
+<script>
+(function () {
+  // Copy-to-clipboard for mailto/tel links
+  if (navigator.clipboard) {
+    document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').forEach(function (a) {
+      a.addEventListener('click', function (e) {
+        e.preventDefault();
+        var value = a.getAttribute('href').replace(/^(mailto:|tel:)/, '');
+        navigator.clipboard.writeText(value).then(function () {
+          var original = a.textContent;
+          var width = a.offsetWidth;
+          a.style.display = 'inline-block';
+          a.style.minWidth = width + 'px';
+          a.classList.add('copy-toast');
+          a.textContent = '[copied ✓]';
+          setTimeout(function () {
+            a.textContent = original;
+            a.classList.remove('copy-toast');
+            a.style.minWidth = '';
+          }, 1200);
+        });
+      });
+    });
+  }
+
+  var container = document.querySelector('.container');
+  if (!container) return;
+
+  // Inject [*] markers as real DOM nodes so typewriter can type them
+  container.querySelectorAll('li').forEach(function (li) {
+    var marker = document.createElement('span');
+    marker.className = 'li-marker';
+    marker.appendChild(document.createTextNode('[*]'));
+    li.insertBefore(marker, li.firstChild);
+  });
+
+  // Make h2 sections keyboard-navigable via Tab
+  container.querySelectorAll('h2').forEach(function (h2) {
+    h2.setAttribute('tabindex', '0');
+  });
+
+  // Inject ─── separators after each h2 heading text
+  container.querySelectorAll('h2').forEach(function (h2) {
+    var rule = document.createElement('span');
+    rule.className = 'h2-rule';
+    rule.appendChild(document.createTextNode('─'.repeat(60)));
+    h2.appendChild(rule);
+  });
+
+  // Make container visible now that DOM markers are in place
+  container.style.visibility = 'visible';
+
+  // Full-page typewriter — skip pre (ASCII art) and print-header
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  var nodes = [];
+  var walker = document.createTreeWalker(container, NodeFilter.SHOW_TEXT, null);
+  var node;
+  while ((node = walker.nextNode())) {
+    var skip = false;
+    var p = node.parentNode;
+    while (p && p !== container) {
+      if (p.tagName === 'PRE' || (p.classList && p.classList.contains('print-header'))) {
+        skip = true; break;
+      }
+      p = p.parentNode;
+    }
+    if (!skip && node.textContent.trim()) {
+      nodes.push({ node: node, full: node.textContent });
+      node.textContent = '';
+    }
+  }
+
+  if (!nodes.length) return;
+
+  var cursor = document.createElement('span');
+  cursor.className = 'tui-cursor';
+  cursor.textContent = '█';
+  container.appendChild(cursor);
+
+  var ni = 0, ci = 0;
+  var CHARS_PER_FRAME = 10;
+
+  function tick() {
+    for (var k = 0; k < CHARS_PER_FRAME; k++) {
+      if (ni >= nodes.length) return;
+
+      var cur = nodes[ni];
+      if (cur.node.nextSibling !== cursor) {
+        cur.node.parentNode.insertBefore(cursor, cur.node.nextSibling);
+      }
+      cur.node.textContent = cur.full.substring(0, ci + 1);
+      ci++;
+      if (ci >= cur.full.length) { ni++; ci = 0; }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  requestAnimationFrame(tick);
+
+  // ── Hidden terminal ──────────────────────────────────────────────
+  var term     = document.getElementById('tui-term');
+  var hist     = document.getElementById('tui-hist');
+  var inp      = document.getElementById('tui-input');
+  var sudoMode = false;
+
+  function termPrint(text, cls) {
+    var line = document.createElement('div');
+    line.className = cls || 'out';
+    line.textContent = text;
+    hist.appendChild(line);
+    hist.scrollTop = hist.scrollHeight;
+  }
+
+  var CMDS = {
+    help: function () {
+      return [
+        'Commands:',
+        '  whoami         who is this person',
+        '  ls             list CV sections',
+        '  cat cv.txt     quick summary',
+        '  uname -a       system info',
+        '  git log        career commits',
+        '  ping <host>    network test',
+        '  sudo hire me   initiate contact',
+        '  clear          clear output',
+        '  exit           close terminal',
+      ].join('\n');
+    },
+    whoami: function () { return 'nicolas_karasiak'; },
+    ls: function () { return 'EXPERIENCE/  EDUCATION/  PROJECTS/  SKILLS/  CONTACT/'; },
+    'cat cv.txt': function () {
+      return [
+        'Staff Data & ML Engineer — Geospatial Platforms',
+        '─────────────────────────────────────────────────',
+        'EarthDaily  2022-now  · data platform, 20M parcels, -40% cost',
+        'Pixstart     2020-22  · satellite change detection pipelines',
+        'PhD INRA     2016-19  · remote sensing time series',
+        '─────────────────────────────────────────────────',
+        '600+ citations  ·  200k+ plugin downloads  ·  Python, Rust, SQL',
+      ].join('\n');
+    },
+    'uname -a': function () {
+      return 'NicolasOS 8.4.0-geospatial #1 SMP Coffee-powered Python3.12 x86_64';
+    },
+    'git log': function () {
+      return [
+        'a7f3c2d (HEAD → main) perf: 20M parcels, 5-day refresh, ~100× cheaper',
+        '3b9e1a0 perf: ARM64 Graviton migration → -40% compute cost',
+        'f2d8c45 feat: QGIS MCP Plugin — 50+ GitHub stars in first month',
+        'c1a09e3 feat: EarthDaily Python SDK — sole designer/maintainer',
+        '9a1e7b3 docs: publish 3 peer-reviewed papers on remote sensing',
+        '4c2f890 (tag: phd-v1.0) init: doctoral research, Dynafor/INRA',
+      ].join('\n');
+    },
+    ping: function (args) {
+      var host = args[1] || 'karasiak.nicolas@gmail.com';
+      return [
+        'PING ' + host + ' 56 bytes of data.',
+        '64 bytes from ' + host + ': icmp_seq=0 ttl=64 time=12ms',
+        '64 bytes from ' + host + ': icmp_seq=1 ttl=64 time=9ms',
+        '64 bytes from ' + host + ': icmp_seq=2 ttl=64 time=11ms',
+        '^C',
+        '3 packets transmitted, 3 received, 0% packet loss',
+      ].join('\n');
+    },
+    clear: function () { hist.innerHTML = ''; return null; },
+    exit: function () { closeTerm(); return null; },
+  };
+
+  function runCmd(raw) {
+    var input = raw.trim();
+    if (!input) return;
+
+    if (sudoMode) {
+      sudoMode = false;
+      termPrint('[sudo] password: ' + '*'.repeat(input.length), 'cmd');
+      setTimeout(function () {
+        termPrint('Access granted.', 'ok');
+        setTimeout(function () {
+          termPrint('Redirecting... karasiak.nicolas@gmail.com', 'ok');
+          window.location.href = 'mailto:karasiak.nicolas@gmail.com';
+        }, 600);
+      }, 900);
+      return;
+    }
+
+    termPrint('nicolas@cv:~$ ' + input, 'cmd');
+
+    if (input === 'sudo hire me') {
+      sudoMode = true;
+      setTimeout(function () {
+        termPrint('[sudo] password for recruiter: ', 'out');
+        inp.type = 'password';
+      }, 200);
+      return;
+    }
+
+    inp.type = 'text';
+    var parts = input.split(/\s+/);
+    var cmd = parts[0];
+    var fn = CMDS[input] || CMDS[cmd];
+    var result;
+
+    if (fn) {
+      result = fn(parts);
+    } else {
+      result = 'bash: ' + cmd + ': command not found  (try: help)';
+    }
+
+    if (result !== null && result !== undefined) {
+      termPrint(result, fn ? 'out' : 'err');
+    }
+  }
+
+  function openTerm() {
+    term.classList.add('open');
+    inp.focus();
+    if (!hist.children.length) {
+      termPrint('nicolas@cv terminal — type help for commands', 'ok');
+    }
+  }
+
+  function closeTerm() {
+    term.classList.remove('open');
+    inp.blur();
+    sudoMode = false;
+    inp.type = 'text';
+  }
+
+  inp.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') { runCmd(inp.value); inp.value = ''; }
+    if (e.key === 'Escape') { closeTerm(); }
+    e.stopPropagation();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    var tag = document.activeElement && document.activeElement.tagName;
+    var inInput = tag === 'INPUT' || tag === 'TEXTAREA';
+
+    // Ctrl+K → toggle terminal
+    if (e.key === 'k' && (e.ctrlKey || e.metaKey) && !inInput) {
+      e.preventDefault();
+      term.classList.contains('open') ? closeTerm() : openTerm();
+      return;
+    }
+
+    // Escape → close terminal (when not typing in it)
+    if (e.key === 'Escape' && !inInput) {
+      if (term.classList.contains('open')) { e.preventDefault(); closeTerm(); }
+      return;
+    }
+  });
+})();
+</script>
 </body>
 </html>

@@ -64,19 +64,26 @@ Open-source maintainer · 600+ scientific citations across OSS tools · 300+ on 
 
 ## SKILLS
 
-**Languages** → Python, Rust, SQL
+Languages
+: Python, Rust, SQL
 
-**Distributed** → Dask, large-scale data pipelines
+Distributed
+: Dask, large-scale data pipelines
 
-**Geospatial** → STAC, GeoParquet, GDAL, rasterio, xarray, pystac
+Geospatial
+: STAC, GeoParquet, GDAL, rasterio, xarray, pystac
 
-**ML** → scikit-learn, PyTorch, Lightning, time-series, geospatial ML
+ML
+: scikit-learn, PyTorch, Lightning, time-series, geospatial ML
 
-**Platform** → API/SDK design, datacube architectures, system design
+Platform
+: API/SDK design, datacube architectures, system design
 
-**Performance** → ARM64 (Graviton), profiling, cost optimization
+Performance
+: ARM64 (Graviton), profiling, cost optimization
 
-**Infra** → AWS (EC2, EKS, S3), Docker, Argo Workflows
+Infra
+: AWS (EC2, EKS, S3), Docker, Argo Workflows
 
 ## CONTACT
 
