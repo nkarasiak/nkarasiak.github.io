@@ -22,7 +22,7 @@ Research contributions cited 400+ times
 *Toulouse · September 2022 to Present*
 
 - Drove design of a production ML platform processing hundreds of millions of
-  field parcels, with software engineers and data scientists
+  field parcels, collaborating with software engineers and data scientists
 - Designed and built a label engineering framework that preserves original ground-truth
   data while supporting flexible label mappings for training and evaluation
 - Simulated EarthDaily's daily satellite constellation by combining data from
