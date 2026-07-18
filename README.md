@@ -47,8 +47,9 @@ Research contributions cited 400+ times
   (Random Forest, SVM)
 - Showed how spatial autocorrelation biases ML evaluation, and
   developed validation strategies to address it
-- Published peer-reviewed research and released Museo ToolBox as open-source
-  software to reproduce the associated experiments (JOSS)
+- Published peer-reviewed research (JOSS) and released Museo ToolBox, an
+  open-source library for spatial cross-validation, model training, and
+  map prediction on rasters
   
 **Guiana Amazonian Park, Intern Data Scientist**
 *Cayenne · March 2016 to September 2016*
@@ -63,7 +64,7 @@ Research contributions cited 400+ times
 - **EarthDaily Python Client**: official package, now the company-wide standard
 - **QGIS Dzetsaka Plugin**: 200k+ downloads
 - **QGIS MCP Plugin**: 100+ GitHub stars
-- **Museo ToolBox**: Open-source Python library for reproducible ML workflows
+- **Museo ToolBox**: peer-reviewed Python library for geospatial ML (JOSS)
   
 ## SKILLS
 
