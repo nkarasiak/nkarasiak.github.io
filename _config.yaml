@@ -1,0 +1,25 @@
+title: Nicolas Karasiak
+description: Senior Geospatial ML Engineer · Distributed Systems
+baseurl: ""
+
+# Keep rendering identical to GitHub
+markdown: kramdown
+kramdown:
+  input: GFM
+
+# No theme → preserve terminal aesthetic
+theme: null
+
+# Ensure assets (like CSS) are included
+include:
+  - assets
+
+# Clean URLs (no .html)
+permalink: pretty
+
+# Avoid unnecessary processing
+exclude:
+  - LICENSE
+  - .gitignore
+  - node_modules
+  - vendor

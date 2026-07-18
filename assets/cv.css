@@ -1,0 +1,341 @@
+/* ============================================
+   Nicolas Karasiak — CV Styles
+   ============================================ */
+
+/* -------------------------------------------
+   1. Design Tokens
+   ------------------------------------------- */
+:root {
+  --bg:            #0c0c0c;
+  --fg:            #a0a0a0;
+  --fg-bright:     #d0d0d0;
+  --fg-dim:        #888888;
+  --accent:        #ffffff;
+
+  --content-width: 680px;
+  --border-dim:    #1a1a1a;   /* terminal input row separator */
+  --border-mid:    #252525;   /* terminal panel top border    */
+  --border-bright: #2a2a2a;   /* h2 rule, terminal hint text  */
+  --term-bg:       #060606;   /* terminal panel background    */
+  --code-color:    #707070;   /* pre / code blocks            */
+}
+
+/* -------------------------------------------
+   2. Base & Reset
+   ------------------------------------------- */
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  font-family: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Scanline overlay — screen only, never in print (avoids PDF rasterization) */
+@media screen {
+  body::before {
+    content: '';
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px);
+  }
+}
+
+/* -------------------------------------------
+   3. Layout
+   ------------------------------------------- */
+.container {
+  visibility: hidden;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 1rem;
+}
+
+/* -------------------------------------------
+   4. Typography & Content
+   ------------------------------------------- */
+h1 {
+  color: var(--accent);
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.2;
+  margin: 0 0 0.6rem;
+  text-shadow: 0 0 18px rgba(255,255,255,0.12);
+}
+
+h2 {
+  color: var(--fg-bright);
+  font-weight: 700;
+  padding-top: 1.5rem;
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+.h2-rule {
+  flex: 1;
+  overflow: hidden;
+  color: var(--border-bright);
+}
+
+p { margin: 0 0 1rem; }
+
+strong { color: var(--fg-bright); font-weight: 500; }
+em { color: var(--fg-dim); font-style: normal; }
+
+a {
+  color: var(--fg-bright);
+  text-decoration: none;
+  border-bottom: 1px solid var(--fg-dim);
+}
+a:hover, a:focus-visible { border-bottom-color: var(--fg-bright); }
+a:focus-visible { outline: 1px solid var(--fg-bright); outline-offset: 3px; }
+
+h2:focus-visible { outline: 1px solid var(--fg-dim); outline-offset: 6px; }
+
+p:has(em) > strong:first-child { display: block; margin-bottom: 0.15rem; }
+p:has(em) > strong:first-child + br { display: none; }
+
+/* Lists */
+ul { list-style: none; padding: 0; margin: 0 0 1.25rem; }
+li { position: relative; padding-left: 2.5rem; margin-bottom: 0.75rem; }
+.li-marker { position: absolute; left: 0; color: var(--fg-dim); }
+.typewriter-pending > .li-marker,
+.typewriter-pending > .h2-rule {
+  visibility: hidden;
+}
+
+/* Code blocks */
+pre {
+  background: transparent;
+  color: var(--code-color);
+  font-family: inherit;
+  font-size: 0.6rem;
+  line-height: 1.35;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 0 1.5rem;
+}
+pre::-webkit-scrollbar { display: none; }
+
+code { font-family: inherit; color: var(--fg-bright); }
+pre code { color: var(--code-color); }
+
+/* Definition lists (skills) */
+dl {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 0.3rem 2rem;
+  margin: 0 0 1.25rem;
+}
+
+dt { color: var(--fg-dim); font-weight: 500; }
+dd { margin: 0; }
+
+/* -------------------------------------------
+   5. Components
+   ------------------------------------------- */
+.tui-cursor {
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.copy-toast { color: var(--fg-bright); }
+
+#tui-hint-badge {
+  position: fixed;
+  bottom: 1.2rem;
+  right: 1.5rem;
+  font-size: 0.7rem;
+  color: var(--fg-dim);
+  pointer-events: none;
+  user-select: none;
+  z-index: 9998;
+}
+
+/* -------------------------------------------
+   6. Terminal
+   ------------------------------------------- */
+.tui-term {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: var(--term-height, 210px);
+  background: var(--term-bg);
+  border-top: 1px solid var(--border-mid);
+  display: none;
+  flex-direction: column;
+  font-size: 13px;
+  z-index: 10000;
+  padding: 0.6rem 1.5rem 0.5rem;
+}
+
+/* Terminal resize handle */
+.tui-term::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: 0; right: 0;
+  height: 8px;
+  cursor: ns-resize;
+  z-index: 10001;
+}
+
+.tui-term.open { display: flex; }
+
+.tui-term-history {
+  flex: 1;
+  overflow-y: auto;
+  color: var(--fg);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+.tui-term-history .cmd { color: var(--fg-bright); }
+.tui-term-history .err { color: var(--fg-dim); }
+.tui-term-history .ok  { color: var(--fg); }
+
+.tui-term-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding-top: 0.25rem;
+  border-top: 1px solid var(--border-dim);
+  flex-shrink: 0;
+}
+
+.tui-term-ps1 { color: var(--fg-dim); white-space: nowrap; user-select: none; }
+
+.tui-term-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--fg-bright);
+  font: inherit;
+  flex: 1;
+  caret-color: var(--accent);
+}
+
+.tui-term-hint {
+  position: absolute;
+  bottom: 0.35rem; right: 1.5rem;
+  font-size: 0.65rem;
+  color: var(--border-bright);
+  pointer-events: none;
+}
+
+/* -------------------------------------------
+   7. Selection & Scrollbar
+   ------------------------------------------- */
+::selection {
+  background: #ffffff;
+  color: #000000;
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #222; border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: #333; }
+
+/* -------------------------------------------
+   8. Accessibility
+   ------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .tui-cursor { animation: none; opacity: 1; }
+}
+
+/* -------------------------------------------
+   9. Print
+   ------------------------------------------- */
+@media screen {
+  .cv-name { display: none; }
+  .tui-term { display: none; }
+  .print-header { display: none; }
+  .intro-gap { display: none; }
+}
+
+@media print {
+  @page { size: A4 portrait; margin: 1cm; }
+
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+
+  html, body { background: #fff; color: #000; height: auto; overflow: visible; }
+  body {
+    font-size: 8.5pt;
+    line-height: 1.3;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100vh;
+  }
+
+  body::before, .tui-term, .tui-term *, .tui-cursor, .h2-rule, .li-marker, pre,
+  #tui-hint-badge, .print-hide { display: none !important; }
+
+  .cv-name { display: none; }
+
+  .container { visibility: visible !important; padding: 0; max-width: none; }
+  a { color: #000; text-decoration: underline; border-bottom: none; }
+
+  .print-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 0.6rem;
+    align-items: start;
+    margin-bottom: 0.4rem;
+  }
+  .print-header h1 { font-size: 17pt; margin-bottom: 0.15rem; line-height: 1.15; text-shadow: none; color: #000; }
+  .print-header .role { font-size: 9.5pt; margin-bottom: 0.3rem; }
+  .print-header .summary { font-size: 8pt; color: #555; line-height: 1.35; margin-bottom: 0.15rem; }
+  .print-header .summary-gap { margin-top: 0.4rem; }
+  .print-header .contact { text-align: right; font-size: 8pt; line-height: 1.6; }
+  .print-header .contact a { display: block; border-bottom: none; text-decoration: none; color: #000; }
+
+  h2 {
+    display: block;
+    font-size: 10pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin: 0.7rem 0 0.25rem;
+    padding-bottom: 1pt;
+    border-bottom: 1px solid #a0a0a0;
+    page-break-after: avoid;
+    white-space: normal;
+  }
+
+  dl { gap: 0.15rem 1.5rem; margin-bottom: 0.45rem; }
+  dt { color: #555; }
+  strong { font-weight: 600; }
+  em { color: #555; font-style: italic; }
+  p { margin-bottom: 0.35rem; }
+  .print-header .summary + .summary { margin-top: 0.5rem; }
+  p:has(em) > strong:first-child { display: block; margin-bottom: 0.05rem; }
+  ul { margin-bottom: 0.45rem; }
+  li { padding-left: 1em; margin-bottom: 0.15rem; page-break-inside: avoid; }
+  li::before { content: '•'; color: #888; position: absolute; left: 0; }
+  h2 + p, h2 + ul { page-break-inside: avoid; }
+}
+
+/* -------------------------------------------
+   10. Responsive
+   ------------------------------------------- */
+@media (max-width: 600px) { /* --breakpoint-mobile */
+  body { font-size: 13px; }
+  .container { padding: 1.5rem 1rem 3rem; }
+  li { padding-left: 2rem; }
+  #tui-hint-badge { display: none; }
+}
