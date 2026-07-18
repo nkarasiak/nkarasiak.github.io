@@ -21,16 +21,16 @@ Research contributions cited 400+ times
 **EarthDaily, Senior Geospatial Data Scientist / ML Engineer**
 *Toulouse · September 2022 to Present*
 
-- Drove design of a production ML platform processing hundreds of millions of
-  field parcels, collaborating with software engineers and data scientists
-- Designed and built a label engineering framework that preserves original ground-truth
+- Designed and built a production ML platform for processing hundreds of millions
+  of field parcels, collaborating with software engineers and data scientists
+- Created a label engineering framework preserving original ground-truth
   data while supporting flexible label mappings for training and evaluation
 - Simulated EarthDaily's daily satellite constellation by combining data from
   many sources with different spatial, temporal and spectral resolutions
 - Fine-tuned and analyzed embeddings from geospatial foundation models (Tessera,
   Galileo) for crop classification and yield estimation
-- Built the official EarthDaily Python package and worked extensively with
-  Xarray and STAC-based workflows
+- Built the official EarthDaily Python package and developed scalable
+  STAC/Xarray-based geospatial data workflows
 
 **Pixstart, Geospatial Data Scientist**
 *Toulouse · September 2020 to September 2022*
