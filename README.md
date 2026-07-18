@@ -11,7 +11,7 @@
 
 **Senior Geospatial ML Engineer**
 
-10 years building geospatial ML, from PhD research to production platforms
+10 years building geospatial ML systems, from PhD research to production platforms
 
 Open-source software adopted in 600+ scientific publications <br>
 Research contributions cited 400+ times
